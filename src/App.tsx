@@ -234,7 +234,7 @@ export function App() {
               Can your browser run it?
             </h1>
             <p className="text-sm text-[#707070] mt-1.5 max-w-xl leading-relaxed">
-              Auto-detects device hardware, WebGPU memory bindings, and shader features to determine which AI models run client-side.
+              Auto-detects WebGPU memory limits, shader features, and WASM threads to determine which AI models run directly inside your browser tab without terminal installs.
             </p>
           </div>
 
@@ -374,7 +374,7 @@ export function App() {
       {/* Footer */}
       <footer className="border-t border-[#262626] bg-[#000000] py-6 text-xs text-[#707070]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p>© {new Date().getFullYear()} llm-locally — zero server telemetry</p>
+          <p>© {new Date().getFullYear()} inbrowser.ai — zero server telemetry</p>
           <p>All hardware checks executed client-side in the browser</p>
         </div>
       </footer>

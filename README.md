@@ -1,4 +1,4 @@
-# canirun
+# inbrowser.ai
 
 Probe client device hardware and match browser-compatible LLMs and AI models across WebGPU, WASM, and ONNX Runtime.
 

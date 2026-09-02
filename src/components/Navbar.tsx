@@ -56,7 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           
           <div className="flex items-center space-x-2">
             <span className="text-sm font-semibold tracking-[-0.28px] text-[#EDEDED]">
-              canirun.ai
+              inbrowser.ai
             </span>
             <span className="text-[#333333]">/</span>
             <span className="text-xs font-normal text-[#707070] hidden sm:inline">
