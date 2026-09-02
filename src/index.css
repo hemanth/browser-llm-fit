@@ -2,38 +2,90 @@
 
 @layer base {
   :root {
-    --bg-primary: #090d16;
-    --bg-secondary: #0f172a;
-    --bg-card: #1e293b;
-    --border-subtle: #334155;
-    --accent: #38bdf8;
+    --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    /* Vercel Design Tokens (Dark Theme Base) */
+    --ds-background-100: #000000;
+    --ds-background-200: #0a0a0a;
+    --ds-background-300: #121212;
+    --ds-gray-100: #171717;
+    --ds-gray-200: #262626;
+    --ds-gray-300: #333333;
+    --ds-gray-400: #4d4d4d;
+    --ds-gray-500: #707070;
+    --ds-gray-600: #8f8f8f;
+    --ds-gray-700: #a1a1a1;
+    --ds-gray-900: #ededed;
+    --ds-gray-1000: #ffffff;
+
+    /* Vercel Interactive Accent (Only for interactive states & focus) */
+    --ds-blue-600: #0072f5;
+    --ds-blue-700: #0062d1;
+
+    /* Status Dot Colors (Small indicators only) */
+    --status-green: #398e4a;
+    --status-amber: #ff990a;
+    --status-red: #e5484d;
+    --status-blue: #0062d1;
+    --status-purple: #7820bc;
   }
 
   body {
-    background-color: #090d16;
-    color: #f1f5f9;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--ds-background-100);
+    color: var(--ds-gray-900);
+    font-family: var(--font-sans);
+    font-feature-settings: "liga" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     margin: 0;
     min-height: 100vh;
-    overflow-x: hidden;
+  }
+
+  /* Three-Weight Rule: 400 (Regular), 500 (Medium), 600 (Semibold). No 700 Bold. */
+  h1 {
+    font-weight: 600;
+    letter-spacing: -2.28px;
+    line-height: 1.05;
+  }
+
+  h2 {
+    font-weight: 500;
+    letter-spacing: -0.28px;
+  }
+
+  h3 {
+    font-weight: 600;
+    letter-spacing: -1.28px;
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+    font-feature-settings: "liga" 1;
   }
 }
 
-/* Custom scrollbars */
+/* Vercel Focus Double-Ring Pattern */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #000000, 0 0 0 4px var(--ds-blue-600);
+}
+
+/* Minimal Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #000000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: #262626;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #333333;
 }

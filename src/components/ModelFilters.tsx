@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Filter, LayoutGrid, Table, ArrowUpDown, X } from 'lucide-react';
+import { Search, LayoutGrid, Table, X } from 'lucide-react';
 
 interface ModelFiltersProps {
   searchQuery: string;
@@ -39,97 +39,90 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
   frameworks,
 }) => {
   return (
-    <div className="space-y-4 mb-6">
-      {/* Top Search Bar & View Mode Row */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-        {/* Search Input */}
+    <div className="space-y-3 mb-6">
+      {/* Search and Main Controls */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+        {/* Search Bar */}
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#707070] pointer-events-none" />
           <input
             type="text"
-            placeholder="Search models by name, architecture (e.g. Llama, Qwen, Whisper), developer, or task..."
+            placeholder="Search models by name, architecture (e.g. Llama, Qwen, Whisper), or task..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700/80 rounded-xl pl-10 pr-10 py-2.5 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+            className="w-full bg-[#0A0A0A] border border-[#262626] rounded-lg pl-9 pr-8 py-2 text-xs text-[#EDEDED] placeholder-[#707070] focus:outline-none focus:border-[#4D4D4D] transition-colors"
           />
           {searchQuery && (
             <button
               onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-200"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-[#707070] hover:text-[#EDEDED]"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-3 w-3" />
             </button>
           )}
         </div>
 
-        {/* Quick controls: Sort & View Mode */}
-        <div className="flex items-center gap-2">
-          {/* Sort Dropdown */}
-          <div className="relative flex items-center bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-300">
-            <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 mr-2" />
-            <span className="text-slate-500 mr-1.5 hidden sm:inline">Sort:</span>
+        {/* Sort & View Mode */}
+        <div className="flex items-center space-x-2 shrink-0">
+          <div className="flex items-center bg-[#0A0A0A] border border-[#262626] rounded-lg px-2.5 py-1.5 text-xs text-[#A1A1A1]">
+            <span className="text-[#707070] mr-1.5 text-[11px]">Sort:</span>
             <select
               value={sortBy}
               onChange={(e) => onSortByChange(e.target.value)}
-              className="bg-transparent text-slate-200 text-xs focus:outline-none cursor-pointer pr-2"
+              className="bg-transparent text-[#EDEDED] text-xs focus:outline-none cursor-pointer"
             >
-              <option value="recommended" className="bg-slate-900 text-slate-200">Compatibility Score (Best First)</option>
-              <option value="size-asc" className="bg-slate-900 text-slate-200">Download Size (Smallest First)</option>
-              <option value="size-desc" className="bg-slate-900 text-slate-200">Download Size (Largest First)</option>
-              <option value="params-asc" className="bg-slate-900 text-slate-200">Parameter Count (Smallest First)</option>
-              <option value="params-desc" className="bg-slate-900 text-slate-200">Parameter Count (Largest First)</option>
-              <option value="ram-asc" className="bg-slate-900 text-slate-200">Min RAM (Lowest First)</option>
+              <option value="recommended" className="bg-[#0A0A0A] text-[#EDEDED]">Compatibility Score</option>
+              <option value="size-asc" className="bg-[#0A0A0A] text-[#EDEDED]">Size (Smallest)</option>
+              <option value="size-desc" className="bg-[#0A0A0A] text-[#EDEDED]">Size (Largest)</option>
+              <option value="params-asc" className="bg-[#0A0A0A] text-[#EDEDED]">Params (Lowest)</option>
+              <option value="params-desc" className="bg-[#0A0A0A] text-[#EDEDED]">Params (Highest)</option>
+              <option value="ram-asc" className="bg-[#0A0A0A] text-[#EDEDED]">RAM (Lowest)</option>
             </select>
           </div>
 
-          {/* View Mode Toggle */}
-          <div className="flex items-center bg-slate-900 border border-slate-800 rounded-xl p-1">
+          <div className="flex items-center bg-[#0A0A0A] border border-[#262626] rounded-lg p-0.5">
             <button
               onClick={() => onViewModeChange('grid')}
-              className={`p-1.5 rounded-lg text-xs transition-all ${
+              className={`p-1.5 rounded-md text-xs transition-colors ${
                 viewMode === 'grid'
-                  ? 'bg-slate-800 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#1F1F1F] text-[#EDEDED]'
+                  : 'text-[#707070] hover:text-[#EDEDED]'
               }`}
-              title="Grid Card View"
+              title="Grid View"
             >
-              <LayoutGrid className="h-4 w-4" />
+              <LayoutGrid className="h-3.5 w-3.5" />
             </button>
             <button
               onClick={() => onViewModeChange('table')}
-              className={`p-1.5 rounded-lg text-xs transition-all ${
+              className={`p-1.5 rounded-md text-xs transition-colors ${
                 viewMode === 'table'
-                  ? 'bg-slate-800 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#1F1F1F] text-[#EDEDED]'
+                  : 'text-[#707070] hover:text-[#EDEDED]'
               }`}
-              title="Comparison Table View"
+              title="Table View"
             >
-              <Table className="h-4 w-4" />
+              <Table className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Modality Chips Carousel / Row */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
+      {/* Modality Tabs */}
+      <div className="flex items-center gap-1 overflow-x-auto pb-1 border-b border-[#1F1F1F] text-xs">
         {modalities.map((m) => {
           const isSelected = selectedModality === m.id;
           return (
             <button
               key={m.id}
               onClick={() => onSelectModality(m.id)}
-              className={`px-3 py-1.5 rounded-full font-medium whitespace-nowrap transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 text-xs font-normal whitespace-nowrap transition-colors border-b-2 -mb-px flex items-center gap-1.5 ${
                 isSelected
-                  ? 'bg-gradient-to-r from-cyan-600 to-indigo-600 text-white shadow-md shadow-indigo-500/20 font-semibold'
-                  : 'bg-slate-900/80 text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 border border-slate-800'
+                  ? 'border-[#EDEDED] text-[#EDEDED] font-medium'
+                  : 'border-transparent text-[#707070] hover:text-[#A1A1A1]'
               }`}
             >
               <span>{m.label}</span>
-              <span
-                className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'
-                }`}
-              >
+              <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${isSelected ? 'bg-[#1F1F1F] text-[#EDEDED]' : 'bg-[#121212] text-[#707070]'}`}>
                 {m.count}
               </span>
             </button>
@@ -137,44 +130,43 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
         })}
       </div>
 
-      {/* Secondary Filter Row: Compatibility Tiers & Frameworks */}
+      {/* Status Indicators & Framework Selector */}
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs pt-1">
-        {/* Compatibility Tier Filters */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mr-1 flex items-center gap-1">
-            <Filter className="h-3 w-3" /> Status:
-          </span>
+        {/* Status Dots */}
+        <div className="flex items-center space-x-1.5">
+          <span className="text-[#707070] text-[11px] mr-1">Status:</span>
           {[
-            { id: 'all', label: 'All Statuses' },
-            { id: 'smooth', label: '🟢 Runs Smoothly' },
-            { id: 'moderate', label: '🟡 Moderate / Tight' },
-            { id: 'incompatible', label: '🔴 Incompatible' },
+            { id: 'all', label: 'All', dot: null },
+            { id: 'smooth', label: 'Runs Smoothly', dot: 'bg-[#398E4A]' },
+            { id: 'moderate', label: 'Tight Fit', dot: 'bg-[#FF990A]' },
+            { id: 'incompatible', label: 'Unsupported', dot: 'bg-[#E5484D]' },
           ].map((t) => {
             const isSelected = selectedTier === t.id;
             return (
               <button
                 key={t.id}
                 onClick={() => onSelectTier(t.id)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                className={`h-6 px-2 rounded-md text-[11px] font-normal transition-colors flex items-center gap-1.5 ${
                   isSelected
-                    ? 'bg-slate-800 text-white border border-slate-600 font-semibold'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                    ? 'bg-[#1F1F1F] text-[#EDEDED] font-medium'
+                    : 'text-[#707070] hover:text-[#EDEDED] hover:bg-[#121212]'
                 }`}
               >
-                {t.label}
+                {t.dot && <span className={`w-1.5 h-1.5 rounded-full ${t.dot}`}></span>}
+                <span>{t.label}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Framework Filter & Match Count */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">Framework:</span>
+        {/* Framework & Count */}
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-1.5">
+            <span className="text-[#707070] text-[11px]">Runtime:</span>
             <select
               value={selectedFramework}
               onChange={(e) => onSelectFramework(e.target.value)}
-              className="bg-slate-900 border border-slate-800 text-slate-300 rounded-lg px-2.5 py-1 text-xs focus:outline-none cursor-pointer"
+              className="bg-[#0A0A0A] border border-[#262626] text-[#A1A1A1] rounded-md px-2 py-1 text-xs focus:outline-none cursor-pointer"
             >
               <option value="all">All Runtimes</option>
               {frameworks.map((f) => (
@@ -185,8 +177,8 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
             </select>
           </div>
 
-          <span className="text-slate-400 text-xs font-mono">
-            Showing <strong className="text-white">{filteredCount}</strong> of {totalModels} models
+          <span className="text-[11px] font-mono text-[#707070]">
+            {filteredCount} of {totalModels} models
           </span>
         </div>
       </div>

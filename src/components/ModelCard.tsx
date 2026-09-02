@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
 import { 
-  CheckCircle2, 
-  AlertTriangle, 
-  XCircle, 
   Code, 
   ExternalLink, 
   Play, 
   ChevronDown, 
   ChevronUp, 
-  Cpu, 
-  Download, 
-  Zap 
 } from 'lucide-react';
 import type { InBrowserModel, CompatibilityEvaluation } from '../types/model';
 
@@ -29,164 +23,95 @@ export const ModelCard: React.FC<ModelCardProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
 
-  // Badge styling based on tier
-  const tierConfig = {
-    smooth: {
-      border: 'border-emerald-500/40 hover:border-emerald-500/70',
-      badgeBg: 'bg-emerald-950/80 text-emerald-300 border-emerald-700/80',
-      icon: CheckCircle2,
-      scoreColor: 'text-emerald-400',
-      glow: 'shadow-emerald-950/20'
-    },
-    moderate: {
-      border: 'border-cyan-500/30 hover:border-cyan-500/60',
-      badgeBg: 'bg-cyan-950/80 text-cyan-300 border-cyan-700/80',
-      icon: CheckCircle2,
-      scoreColor: 'text-cyan-400',
-      glow: 'shadow-cyan-950/20'
-    },
-    tight: {
-      border: 'border-amber-500/40 hover:border-amber-500/70',
-      badgeBg: 'bg-amber-950/80 text-amber-300 border-amber-700/80',
-      icon: AlertTriangle,
-      scoreColor: 'text-amber-400',
-      glow: 'shadow-amber-950/20'
-    },
-    incompatible: {
-      border: 'border-rose-500/30 hover:border-rose-500/50 opacity-75 hover:opacity-100',
-      badgeBg: 'bg-rose-950/80 text-rose-300 border-rose-700/80',
-      icon: XCircle,
-      scoreColor: 'text-rose-400',
-      glow: 'shadow-rose-950/20'
-    }
+  // Vercel small status dot
+  const statusDot = {
+    smooth: { dot: 'bg-[#398E4A]', label: 'Ready' },
+    moderate: { dot: 'bg-[#398E4A]', label: 'Compatible' },
+    tight: { dot: 'bg-[#FF990A]', label: 'Tight fit' },
+    incompatible: { dot: 'bg-[#E5484D]', label: 'Unsupported' }
   }[evaluation.tier];
 
-  const TierIcon = tierConfig.icon;
-
   return (
-    <div
-      className={`bg-slate-900/85 rounded-2xl border ${tierConfig.border} transition-all duration-200 flex flex-col justify-between overflow-hidden shadow-xl ${tierConfig.glow}`}
-    >
-      {/* Top Banner / Compatibility Pill */}
-      <div className="p-5 pb-3">
-        <div className="flex items-start justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2">
-            <span
-              className={`px-2.5 py-1 rounded-full text-xs font-bold border flex items-center gap-1.5 ${tierConfig.badgeBg}`}
-            >
-              <TierIcon className="h-3.5 w-3.5" />
-              <span>{evaluation.headline}</span>
-            </span>
-            <span className={`text-xs font-mono font-bold ${tierConfig.scoreColor}`}>
-              {evaluation.score}% Match
-            </span>
+    <div className="bg-[#0A0A0A] border border-[#262626] hover:border-[#383838] transition-colors rounded-xl flex flex-col justify-between overflow-hidden">
+      {/* Top Header */}
+      <div className="p-4 sm:p-5">
+        <div className="flex items-center justify-between mb-2">
+          {/* Status Dot + Label */}
+          <div className="flex items-center space-x-2">
+            <span className={`w-2 h-2 rounded-full ${statusDot.dot}`}></span>
+            <span className="text-xs font-medium text-[#EDEDED]">{statusDot.label}</span>
+            <span className="text-[11px] font-mono text-[#707070]">• {evaluation.score}%</span>
           </div>
 
-          {/* Framework pill */}
-          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700 shrink-0">
+          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#121212] text-[#8F8F8F] border border-[#262626]">
             {model.framework}
           </span>
         </div>
 
-        {/* Model Title & Developer */}
+        {/* Title & Metadata */}
         <div>
-          <h4 className="text-base font-bold text-white tracking-tight group-hover:text-cyan-300 transition-colors">
+          <h4 className="text-sm font-semibold tracking-[-0.28px] text-[#EDEDED]">
             {model.name}
           </h4>
-          <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
-            <span>By <strong className="text-slate-300 font-medium">{model.developer}</strong></span>
-            <span>•</span>
-            <span className="text-cyan-400 font-medium">{model.modality}</span>
+          <div className="text-xs font-normal text-[#707070] mt-0.5">
+            {model.developer} • {model.modality}
           </div>
         </div>
 
-        {/* Short Description */}
-        <p className="text-xs text-slate-400 mt-2.5 line-clamp-2 leading-relaxed">
+        {/* Description */}
+        <p className="text-xs text-[#8F8F8F] mt-2 line-clamp-2 leading-relaxed">
           {model.description}
         </p>
 
-        {/* Spec Pill Tags (Parameters, Quantization, Format) */}
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-950 text-indigo-300 border border-indigo-900/50">
-            {model.paramCount} Params
+        {/* Spec Tags */}
+        <div className="mt-3 flex flex-wrap gap-1.5 font-mono text-[11px]">
+          <span className="px-2 py-0.5 rounded bg-[#121212] text-[#A1A1A1] border border-[#1F1F1F]">
+            {model.paramCount}
           </span>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-950 text-amber-300 border border-amber-900/50">
+          <span className="px-2 py-0.5 rounded bg-[#121212] text-[#A1A1A1] border border-[#1F1F1F]">
             {model.quantization}
           </span>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-950 text-slate-300 border border-slate-800">
+          <span className="px-2 py-0.5 rounded bg-[#121212] text-[#A1A1A1] border border-[#1F1F1F]">
             {model.format}
           </span>
-          {model.contextWindow && (
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-950 text-purple-300 border border-purple-900/50">
-              {model.contextWindow.toLocaleString()} ctx
-            </span>
-          )}
         </div>
 
-        {/* Estimated Speed & Download Performance Metrics */}
-        <div className="mt-4 p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-1.5 text-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-slate-400 flex items-center gap-1.5">
-              <Zap className="h-3.5 w-3.5 text-amber-400" />
-              Est. Inference Speed:
-            </span>
-            <span className="font-semibold text-slate-200 font-mono">
-              {evaluation.estimatedSpeed}
+        {/* Metric Specs */}
+        <div className="mt-4 pt-3 border-t border-[#1F1F1F] space-y-1.5 text-xs">
+          <div className="flex justify-between items-center text-[#A1A1A1]">
+            <span className="text-[#707070]">Est. Throughput:</span>
+            <span className="font-mono text-[#EDEDED]">{evaluation.estimatedSpeed}</span>
+          </div>
+          <div className="flex justify-between items-center text-[#A1A1A1]">
+            <span className="text-[#707070]">Download Size:</span>
+            <span className="font-mono text-[#EDEDED]">
+              {model.downloadSizeMB === 0 ? 'Built-in (0 MB)' : `${model.downloadSizeMB} MB`}
             </span>
           </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-slate-400 flex items-center gap-1.5">
-              <Download className="h-3.5 w-3.5 text-cyan-400" />
-              Weight Size:
-            </span>
-            <span className="font-semibold text-slate-200 font-mono">
-              {model.downloadSizeMB === 0 ? '0 MB (Chrome Native)' : `${model.downloadSizeMB} MB`}
-            </span>
+          <div className="flex justify-between items-center text-[#A1A1A1]">
+            <span className="text-[#707070]">Required RAM:</span>
+            <span className="font-mono text-[#EDEDED]">{model.minRamGB} GB</span>
           </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-slate-400 flex items-center gap-1.5">
-              <Cpu className="h-3.5 w-3.5 text-indigo-400" />
-              Min Memory Req:
-            </span>
-            <span className="font-mono text-slate-300">
-              {model.minRamGB}GB RAM {model.minVramGB > 0 ? `• ${model.minVramGB}GB VRAM` : ''}
-            </span>
-          </div>
-
-          {model.downloadSizeMB > 0 && (
-            <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-900 flex justify-between">
-              <span>Est. download duration:</span>
-              <span className="text-cyan-400">{evaluation.estimatedDownloadTime}</span>
-            </div>
-          )}
         </div>
 
-        {/* Hardware Compatibility Breakdown Drawer */}
-        <div className="mt-3">
+        {/* Diagnostics Accordion */}
+        <div className="mt-3 pt-2 border-t border-[#1F1F1F]">
           <button
             onClick={() => setExpanded(!expanded)}
-            className="w-full flex items-center justify-between text-[11px] font-semibold text-slate-400 hover:text-slate-200 py-1 transition-colors"
+            className="w-full flex items-center justify-between text-[11px] font-normal text-[#707070] hover:text-[#EDEDED] transition-colors"
           >
-            <span>Compatibility Breakdown ({evaluation.checks.filter(c => c.passed).length}/{evaluation.checks.length} checks passed)</span>
-            {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+            <span>Hardware checks ({evaluation.checks.filter(c => c.passed).length}/{evaluation.checks.length})</span>
+            {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
           </button>
 
           {expanded && (
-            <div className="mt-2 p-2.5 rounded-lg bg-slate-950 border border-slate-800 space-y-1.5 text-xs">
+            <div className="mt-2 p-2.5 rounded-lg bg-[#000000] border border-[#1F1F1F] space-y-1.5 text-xs">
               {evaluation.checks.map((check, idx) => (
-                <div key={idx} className="flex items-start gap-2">
-                  {check.passed ? (
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 mt-0.5 shrink-0" />
-                  ) : check.severity === 'warning' ? (
-                    <AlertTriangle className="h-3.5 w-3.5 text-amber-400 mt-0.5 shrink-0" />
-                  ) : (
-                    <XCircle className="h-3.5 w-3.5 text-rose-400 mt-0.5 shrink-0" />
-                  )}
-                  <div>
-                    <span className="font-semibold text-slate-300 text-[11px]">{check.name}: </span>
-                    <span className="text-[11px] text-slate-400 leading-snug">{check.detail}</span>
+                <div key={idx} className="flex items-start space-x-2 text-[11px]">
+                  <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${check.passed ? 'bg-[#398E4A]' : check.severity === 'warning' ? 'bg-[#FF990A]' : 'bg-[#E5484D]'}`}></span>
+                  <div className="text-[#A1A1A1]">
+                    <span className="text-[#EDEDED] font-medium">{check.name}: </span>
+                    <span className="text-[#707070]">{check.detail}</span>
                   </div>
                 </div>
               ))}
@@ -195,42 +120,39 @@ export const ModelCard: React.FC<ModelCardProps> = ({
         </div>
       </div>
 
-      {/* Card Action Buttons Footer */}
-      <div className="p-4 pt-3 bg-slate-950/40 border-t border-slate-800/80 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5">
+      {/* Card Actions */}
+      <div className="p-3 bg-[#0A0A0A] border-t border-[#1F1F1F] flex items-center justify-between">
+        <div className="flex items-center space-x-1.5">
           {model.hfUrl && (
             <a
               href={model.hfUrl}
               target="_blank"
               rel="noreferrer"
-              className="p-2 rounded-lg bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 transition-all text-xs"
+              className="h-7 w-7 rounded-md bg-transparent text-[#707070] hover:text-[#EDEDED] border border-[#262626] hover:bg-[#171717] transition-colors flex items-center justify-center"
               title="View on Hugging Face"
             >
-              <ExternalLink className="h-3.5 w-3.5" />
+              <ExternalLink className="h-3 w-3" />
             </a>
           )}
-
           <button
             onClick={() => onOpenCode(model)}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700 transition-all text-xs font-semibold flex items-center gap-1.5"
-            title="View ready-to-run JavaScript / HTML code snippet"
+            className="h-7 px-2.5 rounded-md bg-transparent text-[#A1A1A1] hover:text-[#EDEDED] border border-[#262626] hover:bg-[#171717] transition-colors text-xs font-normal flex items-center gap-1.5"
           >
-            <Code className="h-3.5 w-3.5 text-cyan-400" />
+            <Code className="h-3 w-3 text-[#707070]" />
             <span>Code</span>
           </button>
         </div>
 
-        {/* Live In-Browser Test Button */}
         {model.testModelId && evaluation.tier !== 'incompatible' ? (
           <button
             onClick={() => onTestLive && onTestLive(model)}
-            className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-600 to-indigo-600 text-white hover:from-cyan-500 hover:to-indigo-500 transition-all text-xs font-bold flex items-center gap-1.5 shadow-md shadow-cyan-900/20"
+            className="h-7 px-3 rounded-md bg-[#EDEDED] hover:bg-[#FFFFFF] text-[#000000] text-xs font-medium transition-colors flex items-center gap-1.5"
           >
-            <Play className="h-3 w-3 fill-white" />
-            <span>Test Live</span>
+            <Play className="h-3 w-3 fill-current" />
+            <span>Run Test</span>
           </button>
         ) : (
-          <span className="text-[11px] font-medium text-slate-500 font-mono">
+          <span className="text-[11px] font-mono text-[#707070]">
             {evaluation.recommendedBackend}
           </span>
         )}

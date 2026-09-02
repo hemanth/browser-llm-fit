@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, PlayCircle, Sparkles, CheckCircle2, Clock, Cpu } from 'lucide-react';
+import { X, Play } from 'lucide-react';
 import type { InBrowserModel } from '../types/model';
 
 interface LiveInferenceModalProps {
@@ -16,7 +16,7 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
   hasWebGPU,
 }) => {
   const [inputText, setInputText] = useState(
-    'Running machine learning models locally in the browser with WebGPU is astonishingly fast and private!'
+    'Running machine learning models locally in the browser with WebGPU is fast and completely private.'
   );
   const [loadingModel, setLoadingModel] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState<string>('');
@@ -34,17 +34,15 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
     setLoadingModel(true);
     setResult(null);
     setLatencyMs(null);
-    setLoadingProgress('Initializing model pipeline...');
+    setLoadingProgress('Loading pipeline...');
 
     try {
       const { pipeline, env } = await import('@huggingface/transformers');
       env.allowLocalModels = false;
 
-      // Determine device: webgpu if available, else wasm
       const device = hasWebGPU ? 'webgpu' : 'wasm';
       setDeviceUsed(device);
 
-      // Check task type based on model
       const isFeatureExtractor = targetModelId.includes('MiniLM') || targetModelId.includes('bge');
       const task = isFeatureExtractor ? 'feature-extraction' : 'sentiment-analysis';
 
@@ -55,7 +53,7 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
             const percent = Math.round((progress.loaded / progress.total) * 100) || 0;
             setLoadingProgress(`Downloading ${progress.file}: ${percent}%`);
           } else if (progress.status === 'ready') {
-            setLoadingProgress('Model compiled and ready!');
+            setLoadingProgress('Ready');
           }
         }
       });
@@ -73,14 +71,14 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
       if (isFeatureExtractor) {
         const shape = output.dims ? `[${output.dims.join(' × ')}]` : `Array(${output.data.length})`;
         const sample = Array.from(output.data.slice(0, 5)).map((v: any) => v.toFixed(4)).join(', ');
-        setResult(`Embedding Vector generated (${shape}): [${sample}, ...]`);
+        setResult(`Embedding Vector (${shape}): [${sample}, ...]`);
       } else {
         const top = Array.isArray(output) ? output[0] : output;
-        setResult(`Label: ${top.label} • Confidence: ${(top.score * 100).toFixed(2)}%`);
+        setResult(`Classification: ${top.label} • ${(top.score * 100).toFixed(2)}% confidence`);
       }
     } catch (err) {
       console.error(err);
-      setResult(`Inference Error: ${(err as Error).message}. (Check browser console)`);
+      setResult(`Execution error: ${(err as Error).message}`);
     } finally {
       setLoadingModel(false);
       setRunningInference(false);
@@ -88,103 +86,72 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#000000]/80 backdrop-blur-sm">
+      <div className="bg-[#0A0A0A] border border-[#262626] rounded-xl max-w-lg w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-              <PlayCircle className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                Live In-Browser Inference
-                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800">
-                  Transformers.js
-                </span>
-              </h3>
-              <p className="text-xs text-slate-400">
-                Testing {modelTitle}
-              </p>
-            </div>
+        <div className="p-4 border-b border-[#262626] flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-semibold tracking-[-0.28px] text-[#EDEDED]">
+              Live In-Browser Inference
+            </h3>
+            <p className="text-xs text-[#707070] mt-0.5">
+              {modelTitle} via Transformers.js
+            </p>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="h-7 w-7 rounded-md text-[#707070] hover:text-[#EDEDED] hover:bg-[#171717] transition-colors flex items-center justify-center"
           >
-            <X className="h-5 w-5" />
+            <X className="h-3.5 w-3.5" />
           </button>
         </div>
 
-        {/* Body */}
-        <div className="p-5 space-y-4 overflow-y-auto">
-          {/* Target Model Info */}
-          <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 text-xs flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Cpu className="h-4 w-4 text-cyan-400" />
-              <span className="text-slate-400">Model:</span>
-              <strong className="text-white font-mono">{targetModelId}</strong>
-            </div>
-            <span className="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-cyan-300 border border-slate-700 font-mono">
-              Backend: {hasWebGPU ? 'WebGPU' : 'WASM CPU'}
-            </span>
+        {/* Content */}
+        <div className="p-4 space-y-3.5 overflow-y-auto text-xs">
+          {/* Target Model Bar */}
+          <div className="p-2.5 bg-[#000000] rounded-lg border border-[#262626] flex items-center justify-between font-mono">
+            <span className="text-[#EDEDED] truncate">{targetModelId}</span>
+            <span className="text-[11px] text-[#707070] ml-2 shrink-0">{hasWebGPU ? 'WebGPU' : 'WASM'}</span>
           </div>
 
           {/* Text Input */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300">
-              Sample Prompt / Input Text:
-            </label>
+          <div className="space-y-1">
+            <label className="text-xs font-normal text-[#A1A1A1]">Input Text</label>
             <textarea
               rows={3}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-              placeholder="Enter text to classify or embed..."
+              className="w-full bg-[#000000] border border-[#262626] rounded-lg p-2.5 text-xs text-[#EDEDED] placeholder-[#707070] focus:outline-none focus:border-[#4D4D4D]"
             />
           </div>
 
-          {/* Trigger Button */}
+          {/* Run Button */}
           <button
             onClick={handleRunInference}
             disabled={loadingModel || runningInference}
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-indigo-900/30 transition-all cursor-pointer"
+            className="w-full h-8 rounded-md bg-[#EDEDED] hover:bg-[#FFFFFF] disabled:opacity-50 text-[#000000] font-medium text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
           >
             {loadingModel ? (
-              <>
-                <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>{loadingProgress || 'Loading Model...'}</span>
-              </>
+              <span>{loadingProgress || 'Loading weights...'}</span>
             ) : runningInference ? (
-              <>
-                <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Evaluating Inference...</span>
-              </>
+              <span>Evaluating...</span>
             ) : (
               <>
-                <Sparkles className="h-4 w-4" />
+                <Play className="h-3 w-3 fill-current" />
                 <span>Run In-Browser Model</span>
               </>
             )}
           </button>
 
-          {/* Results Box */}
+          {/* Results */}
           {result && (
-            <div className="p-4 rounded-xl bg-slate-950 border border-emerald-500/40 space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-emerald-400 flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" />
-                  Execution Result
-                </span>
-                {latencyMs !== null && (
-                  <span className="font-mono text-slate-400 text-[11px] flex items-center gap-1">
-                    <Clock className="h-3 w-3 text-cyan-400" />
-                    Latency: <strong className="text-white">{latencyMs} ms</strong> ({deviceUsed})
-                  </span>
-                )}
+            <div className="p-3 rounded-lg bg-[#000000] border border-[#262626] space-y-1.5 font-mono">
+              <div className="flex justify-between items-center text-[11px] text-[#707070]">
+                <span>Inference Output</span>
+                {latencyMs !== null && <span>{latencyMs}ms ({deviceUsed})</span>}
               </div>
-              <div className="p-2.5 bg-slate-900 rounded-lg text-xs font-mono text-slate-100 border border-slate-800">
+              <div className="text-[#EDEDED] text-xs leading-relaxed">
                 {result}
               </div>
             </div>

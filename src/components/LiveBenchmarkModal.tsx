@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Activity, Play, CheckCircle2, XCircle, ShieldCheck, Zap, HardDrive } from 'lucide-react';
+import { X, Play } from 'lucide-react';
 import type { BenchmarkResults } from '../utils/webgpuBenchmark';
 import { runHardwareDiagnostics } from '../utils/webgpuBenchmark';
 
@@ -31,118 +31,97 @@ export const LiveBenchmarkModal: React.FC<LiveBenchmarkModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#000000]/80 backdrop-blur-sm">
+      <div className="bg-[#0A0A0A] border border-[#262626] rounded-xl max-w-lg w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
-              <Activity className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-white">
-                Live WebGPU Hardware Stress Test
-              </h3>
-              <p className="text-xs text-slate-400">
-                Directly allocates GPU memory buffers and dispatches WGSL matrix multiplication shaders
-              </p>
-            </div>
+        <div className="p-4 border-b border-[#262626] flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-semibold tracking-[-0.28px] text-[#EDEDED]">
+              GPU Diagnostics & Buffer Allocation
+            </h3>
+            <p className="text-xs text-[#707070] mt-0.5">
+              Live WebGPU buffer memory and compute shader tests.
+            </p>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="h-7 w-7 rounded-md text-[#707070] hover:text-[#EDEDED] hover:bg-[#171717] transition-colors flex items-center justify-center"
           >
-            <X className="h-5 w-5" />
+            <X className="h-3.5 w-3.5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-5 overflow-y-auto space-y-5">
+        <div className="p-5 space-y-4 overflow-y-auto">
           {!results && !running && (
-            <div className="text-center py-6">
-              <ShieldCheck className="h-12 w-12 text-cyan-400 mx-auto mb-3" />
-              <h4 className="text-base font-bold text-white mb-1">
-                Verify In-Browser GPU Capabilities
-              </h4>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto mb-5 leading-relaxed">
-                This test creates real WebGPU buffer storage structures and benchmarks compute shader execution throughput on your device.
+            <div className="text-center py-6 space-y-3">
+              <p className="text-xs text-[#8F8F8F] max-w-sm mx-auto leading-relaxed">
+                Directly tests your browser's WebGPU device by progressively allocating VRAM storage buffers (32MB to 2048MB) and measuring compute shader matrix multiplication throughput.
               </p>
               <button
                 onClick={handleStartBenchmark}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-xs flex items-center gap-2 mx-auto shadow-lg shadow-cyan-900/30 transition-all"
+                className="h-9 px-4 rounded-md bg-[#EDEDED] hover:bg-[#FFFFFF] text-[#000000] text-xs font-medium transition-colors inline-flex items-center gap-2 cursor-pointer"
               >
-                <Play className="h-4 w-4 fill-white" />
-                <span>Start Diagnostics & Stress Test</span>
+                <Play className="h-3.5 w-3.5 fill-current" />
+                <span>Run Diagnostic Test</span>
               </button>
             </div>
           )}
 
           {running && (
-            <div className="text-center py-10 space-y-3">
-              <div className="inline-block h-10 w-10 border-3 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-              <div className="text-sm font-bold text-white">Testing GPU Buffers & Compute Shaders...</div>
-              <p className="text-xs text-slate-400">Allocating storage buffers and running WGSL matrix math</p>
+            <div className="text-center py-8 space-y-2">
+              <div className="inline-block h-6 w-6 border-2 border-[#EDEDED] border-t-transparent rounded-full animate-spin"></div>
+              <div className="text-xs font-medium text-[#EDEDED]">Executing WebGPU Shaders...</div>
+              <p className="text-[11px] text-[#707070]">Testing storage buffer bindings and compute passes</p>
             </div>
           )}
 
           {results && (
             <div className="space-y-4">
-              {/* Summary Score Banner */}
-              <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${results.webgpuSupported ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
-                    {results.webgpuSupported ? <Zap className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
+              {/* Summary Block */}
+              <div className="p-4 rounded-lg bg-[#000000] border border-[#262626] flex items-center justify-between">
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className={`w-2 h-2 rounded-full ${results.webgpuSupported ? 'bg-[#398E4A]' : 'bg-[#E5484D]'}`}></span>
+                    <span className="text-xs font-medium text-[#EDEDED]">
+                      {results.webgpuSupported ? 'WebGPU Fully Supported' : 'WebGPU Unavailable'}
+                    </span>
                   </div>
-                  <div>
-                    <div className="text-sm font-bold text-white">
-                      {results.webgpuSupported ? 'WebGPU Fully Operational' : 'WebGPU Unavailable'}
-                    </div>
-                    <div className="text-xs text-slate-400">
-                      Max verified buffer: <strong className="text-cyan-400 font-mono">{results.maxAllocatableBufferMB} MB</strong>
-                    </div>
+                  <div className="text-xs font-mono text-[#707070] mt-1">
+                    Max Allocatable Buffer: <span className="text-[#EDEDED]">{results.maxAllocatableBufferMB} MB</span>
                   </div>
                 </div>
 
                 {results.gflops && (
                   <div className="text-right">
-                    <div className="text-lg font-mono font-bold text-emerald-400">
+                    <div className="text-sm font-mono font-medium text-[#EDEDED]">
                       ~{results.gflops} GFLOPS
                     </div>
-                    <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
-                      Compute Throughput
-                    </div>
+                    <div className="text-[10px] text-[#707070]">Throughput</div>
                   </div>
                 )}
               </div>
 
               {/* Buffer allocation tests */}
               <div>
-                <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider block mb-2 flex items-center gap-1.5">
-                  <HardDrive className="h-3.5 w-3.5 text-cyan-400" />
-                  Live Storage Buffer Allocations
+                <span className="text-[11px] text-[#707070] block mb-2">
+                  Buffer allocation stages
                 </span>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-4 gap-1.5 font-mono text-xs">
                   {results.testedSizesMB.map((t) => (
                     <div
                       key={t.sizeMB}
-                      className={`p-2.5 rounded-xl border text-xs flex flex-col justify-between ${
+                      className={`p-2 rounded border text-center ${
                         t.success
-                          ? 'bg-emerald-950/30 border-emerald-800/60 text-emerald-300'
-                          : 'bg-slate-950/40 border-slate-800 text-slate-500'
+                          ? 'bg-[#121212] border-[#262626] text-[#EDEDED]'
+                          : 'bg-[#000000] border-[#1F1F1F] text-[#4D4D4D]'
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold">{t.sizeMB} MB</span>
-                        {t.success ? (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-                        ) : (
-                          <XCircle className="h-3.5 w-3.5 text-slate-600" />
-                        )}
+                      <div className="font-medium">{t.sizeMB}M</div>
+                      <div className="text-[10px] text-[#707070] mt-0.5">
+                        {t.success ? `${t.timeMs}ms` : 'fail'}
                       </div>
-                      <span className="text-[10px] font-mono mt-1 text-slate-400">
-                        {t.success ? `${t.timeMs} ms` : 'Exceeds limit'}
-                      </span>
                     </div>
                   ))}
                 </div>
@@ -150,12 +129,9 @@ export const LiveBenchmarkModal: React.FC<LiveBenchmarkModalProps> = ({
 
               {/* Diagnostic notes */}
               {results.notes.length > 0 && (
-                <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs font-mono space-y-1">
-                  <span className="text-slate-500 block text-[10px] uppercase font-bold tracking-wider mb-1">
-                    Telemetry Logs
-                  </span>
+                <div className="p-3 bg-[#000000] rounded-lg border border-[#262626] text-[11px] font-mono space-y-1 text-[#A1A1A1]">
                   {results.notes.map((n, i) => (
-                    <div key={i} className="text-slate-300">
+                    <div key={i} className="text-[#8F8F8F]">
                       &gt; {n}
                     </div>
                   ))}
@@ -164,9 +140,9 @@ export const LiveBenchmarkModal: React.FC<LiveBenchmarkModalProps> = ({
 
               <button
                 onClick={handleStartBenchmark}
-                className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all"
+                className="w-full h-8 rounded-md bg-[#171717] hover:bg-[#262626] text-[#EDEDED] border border-[#262626] text-xs font-normal transition-colors"
               >
-                Re-run Benchmark
+                Run Again
               </button>
             </div>
           )}

@@ -14,7 +14,6 @@ import { ModelTableView } from './components/ModelTableView';
 import { CodeSnippetModal } from './components/CodeSnippetModal';
 import { LiveBenchmarkModal } from './components/LiveBenchmarkModal';
 import { LiveInferenceModal } from './components/LiveInferenceModal';
-import { Sparkles, Cpu, Layers, ShieldCheck } from 'lucide-react';
 
 export function App() {
   const [hardware, setHardware] = useState<HardwareProfile | null>(null);
@@ -55,7 +54,7 @@ export function App() {
       const profile = await detectHardwareProfile();
       setHardware(profile);
 
-      // Pre-seed simulation state with detected values if user switches to sandbox
+      // Pre-seed simulation state with detected values
       setSimulation((prev) => ({
         ...prev,
         ramGB: profile.reportedRamGB || profile.estimatedRamGB,
@@ -211,7 +210,7 @@ export function App() {
   }, [evaluatedModels, searchQuery, selectedModality, selectedFramework, selectedTier, sortBy]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen bg-[#000000] text-[#EDEDED] flex flex-col selection:bg-[#EDEDED] selection:text-[#000000]">
       {/* Top Navbar */}
       <Navbar
         hardware={hardware}
@@ -226,42 +225,35 @@ export function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Hero Introduction */}
-        <div className="text-center sm:text-left flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 space-y-7">
+        {/* Minimal Hero Header with Vercel Typographic Hierarchy */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-[#1F1F1F]">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-950/70 border border-cyan-800/80 text-cyan-400 text-xs font-semibold mb-2 shadow-sm">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Real-Time In-Browser AI Engine</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-              Can My Browser Run It?
+            <h1 className="text-3xl sm:text-4xl text-[#EDEDED]">
+              Can your browser run it?
             </h1>
-            <p className="text-sm sm:text-base text-slate-400 mt-1 max-w-2xl leading-relaxed">
-              Auto-detects your CPU, WebGPU, RAM, and buffer limits. Instantly see which LLMs, speech models, vision models, and embeddings run smoothly on your machine.
+            <p className="text-sm text-[#707070] mt-1.5 max-w-xl leading-relaxed">
+              Auto-detects device hardware, WebGPU memory bindings, and shader features to determine which AI models run client-side.
             </p>
           </div>
 
-          <div className="flex items-center justify-center sm:justify-start gap-3">
+          <div className="flex items-center space-x-2 shrink-0">
             <button
               onClick={() => setIsSimulatorOpen(!isSimulatorOpen)}
-              className="px-4 py-2.5 rounded-xl font-bold text-xs bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-slate-600 transition-all flex items-center gap-2 shadow-sm"
+              className="h-8 px-3 rounded-md text-xs font-medium bg-[#171717] hover:bg-[#262626] text-[#EDEDED] border border-[#333333] transition-colors"
             >
-              <Cpu className="h-4 w-4 text-amber-400" />
-              <span>{isSimulatorOpen ? 'Hide Simulator' : 'Hardware Simulator'}</span>
+              {isSimulatorOpen ? 'Hide Simulator' : 'Hardware Simulator'}
             </button>
-
             <button
               onClick={() => setIsBenchmarkOpen(true)}
-              className="px-4 py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white transition-all flex items-center gap-2 shadow-lg shadow-cyan-900/30"
+              className="h-8 px-3 rounded-md text-xs font-medium bg-[#EDEDED] hover:bg-[#FFFFFF] text-[#000000] transition-colors"
             >
-              <ShieldCheck className="h-4 w-4" />
-              <span>GPU Diagnostic Test</span>
+              Run GPU Test
             </button>
           </div>
         </div>
 
-        {/* Hardware Dashboard Card */}
+        {/* Hardware Dashboard */}
         <HardwareDashboard
           hardware={hardware}
           simulation={simulation}
@@ -283,12 +275,11 @@ export function App() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-                <Layers className="h-6 w-6 text-cyan-400" />
-                Browser AI Models Catalog
+              <h2 className="text-sm font-medium tracking-[-0.28px] text-[#EDEDED]">
+                Models Matrix
               </h2>
-              <p className="text-xs text-slate-400">
-                Models evaluated dynamically against your active hardware configuration
+              <p className="text-xs text-[#707070]">
+                Evaluated against active hardware constraints.
               </p>
             </div>
           </div>
@@ -315,9 +306,9 @@ export function App() {
 
           {/* Model Display (Grid or Table) */}
           {filteredAndSorted.length === 0 ? (
-            <div className="p-12 text-center bg-slate-900/40 rounded-2xl border border-slate-800">
-              <p className="text-sm font-semibold text-slate-300">No models match your current filters.</p>
-              <p className="text-xs text-slate-500 mt-1">Try resetting your search query or selecting "All Statuses".</p>
+            <div className="p-12 text-center bg-[#0A0A0A] rounded-xl border border-[#262626]">
+              <p className="text-xs font-medium text-[#EDEDED]">No matching models</p>
+              <p className="text-xs text-[#707070] mt-1">Try resetting your search query or status filter.</p>
               <button
                 onClick={() => {
                   setSearchQuery('');
@@ -325,13 +316,13 @@ export function App() {
                   setSelectedFramework('all');
                   setSelectedTier('all');
                 }}
-                className="mt-4 px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-cyan-400 hover:bg-slate-700"
+                className="mt-3 px-3 py-1.5 rounded-md text-xs font-medium bg-[#171717] text-[#EDEDED] border border-[#333333] hover:bg-[#262626]"
               >
-                Reset All Filters
+                Reset Filters
               </button>
             </div>
           ) : viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredAndSorted.map(({ model, evaluation }) => (
                 <ModelCard
                   key={model.id}
@@ -357,36 +348,33 @@ export function App() {
           )}
         </div>
 
-        {/* Technology Deep-Dive & Architecture Info */}
-        <div className="mt-12 p-6 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400 space-y-4">
-          <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <Cpu className="h-4 w-4 text-cyan-400" />
-            How In-Browser AI Execution Works
+        {/* Minimal Vercel Architecture Reference */}
+        <div className="mt-12 p-5 rounded-xl bg-[#0A0A0A] border border-[#262626] text-xs text-[#707070] space-y-3">
+          <h3 className="text-xs font-medium text-[#EDEDED] uppercase tracking-wider">
+            In-Browser AI Execution Architecture
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
-              <strong className="text-cyan-400 block text-xs mb-1">WebGPU & WGSL Compute</strong>
-              Direct access to device GPU compute shaders. Bypasses WebGL overhead and executes half-precision FP16 matrix operations natively, enabling up to 60+ tokens/sec on Apple Silicon and modern discrete GPUs.
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="p-3 bg-[#000000] rounded-lg border border-[#1F1F1F]">
+              <span className="text-[#EDEDED] block font-medium mb-1">WebGPU WGSL</span>
+              Executes half-precision FP16 matrix multiplication directly on GPU compute pipelines, bypassing WebGL overhead.
             </div>
-            <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
-              <strong className="text-indigo-400 block text-xs mb-1">ONNX Runtime Web & Transformers.js</strong>
-              Provides full Hugging Face pipeline ergonomics directly in JavaScript. Models are downloaded and cached permanently in the browser's Cache/IndexedDB storage for 100% offline execution.
+            <div className="p-3 bg-[#000000] rounded-lg border border-[#1F1F1F]">
+              <span className="text-[#EDEDED] block font-medium mb-1">ONNX Runtime Web</span>
+              Compiles models to WebGPU or CPU WASM SIMD. Weights persist inside browser Cache API for offline use.
             </div>
-            <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
-              <strong className="text-emerald-400 block text-xs mb-1">WebAssembly (WASM SIMD) Fallback</strong>
-              For devices without WebGPU or restrictive browser flags, models fall back to highly optimized 128-bit SIMD vector instructions on the CPU via llama.cpp or ONNX CPU runtimes.
+            <div className="p-3 bg-[#000000] rounded-lg border border-[#1F1F1F]">
+              <span className="text-[#EDEDED] block font-medium mb-1">WASM SIMD Fallback</span>
+              128-bit vector instructions executed on CPU threads via llama.cpp or Wllama when WebGPU is unavailable.
             </div>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© {new Date().getFullYear()} LLM Locally • 100% Private, Client-Side Device Profiler</p>
-          <div className="flex items-center gap-4">
-            <span className="text-slate-400">Zero data sent to servers • All detection performed locally</span>
-          </div>
+      <footer className="border-t border-[#262626] bg-[#000000] py-6 text-xs text-[#707070]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p>© {new Date().getFullYear()} llm-locally — zero server telemetry</p>
+          <p>All hardware checks executed client-side in the browser</p>
         </div>
       </footer>
 
