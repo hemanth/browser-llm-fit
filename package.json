@@ -23,6 +23,7 @@
     "@vitejs/plugin-react": "^6.1.0",
     "@webgpu/types": "^0.1.72",
     "oxlint": "^1.79.0",
+    "playwright": "^1.62.1",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2",
     "vite": "^8.2.2"

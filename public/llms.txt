@@ -1,0 +1,28 @@
+# inbrowser.ai
+
+> Auto-detect client hardware capabilities and match against browser-executable AI models across WebGPU, WASM, and ONNX Runtime.
+
+## Links
+- [Application](https://h3manth.com/ai/inbrowser/): Live interactive hardware matrix and profiler
+- [Full Documentation](https://h3manth.com/ai/inbrowser/llms-full.txt): Comprehensive model specifications and agent discovery guide
+- [Source Code](https://github.com/hemanth/inbrowser): GitHub repository and weekly automated model registry updater
+- [Author](https://h3manth.com): Hemanth HM
+
+## Overview
+inbrowser.ai probes client browser capabilities including WebGPU support, shader-f16 floating point support, maximum storage buffer binding size, navigator.deviceMemory, and WASM SIMD/threads. It evaluates 30+ machine learning models to determine which can run client-side inside a browser tab with zero server roundtrips.
+
+## Features
+- Hardware Auto-Detection: Probes navigator.gpu for adapter limits, shader-f16 half-precision, buffer limits, and CPU concurrency.
+- Compatibility Matrix: Evaluates 30+ models across LLM, Vision, Audio, Embeddings, and NLP modalities.
+- Hardware Simulation Sandbox: Simulates Apple M3 Max, discrete RTX 4080, Chromebook, and mobile phone environments.
+- GPU & CPU Stress Benchmark: Real-time WGSL compute shader matrix multiplication and buffer allocation benchmarking.
+- In-Browser Live Inference: Zero-server model execution via Transformers.js v3 ONNX Runtime Web.
+- Code Snippet Generator: Ready-to-use implementation code for WebLLM, Transformers.js, Wllama, and TensorFlow.js.
+
+## Supported Runtimes
+- [WebLLM](https://webllm.mlc.ai): MLC AI WebGPU WGSL compute shaders (Llama 3.2, Qwen 2.5 Coder, DeepSeek-R1 Distill, Mistral 7B).
+- [Transformers.js v3](https://huggingface.co/docs/transformers.js): ONNX Runtime Web with WebGPU and WASM SIMD (SmolLM2, Whisper, Florence-2, BGE-M3).
+- [Wllama](https://github.com/ngxson/wllama): llama.cpp compiled to WebAssembly with multi-threading (TinyLlama, Danube 3 GGUF).
+- [Google MediaPipe](https://ai.google.dev/edge/mediapipe/solutions/guide): Google on-device Web ML (Gemma 2B, Face Mesh).
+- [TensorFlow.js](https://www.tensorflow.org/js): WebGL and WebGPU neural networks (Universal Sentence Encoder, MobileNetV4).
+- [Chrome Built-in AI](https://developer.chrome.com/docs/ai/built-in): Gemini Nano via window.ai.languageModel.

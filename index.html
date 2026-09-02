@@ -2,15 +2,88 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary Metadata -->
     <title>inbrowser.ai — Can your browser run AI?</title>
-    <meta name="description" content="Auto-detect WebGPU hardware, WASM SIMD, and buffer memory limits to determine which AI models can run directly inside your browser tab." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <meta name="title" content="inbrowser.ai — Can your browser run AI?" />
+    <meta name="description" content="Auto-detect WebGPU hardware, WASM SIMD, and buffer memory limits to determine which AI models can run directly inside your browser tab without servers or terminal installs." />
+    <meta name="keywords" content="webgpu, in-browser ai, client-side llm, webllm, transformers.js, onnx runtime web, wllama, llama in browser, local ai, deepseek browser" />
+    <meta name="author" content="Hemanth HM" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="canonical" href="https://h3manth.com/ai/inbrowser/" />
+
+    <!-- Favicons & App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/ai/inbrowser/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/ai/inbrowser/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/ai/inbrowser/apple-touch-icon.png" />
+    <link rel="manifest" href="/ai/inbrowser/site.webmanifest" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://h3manth.com/ai/inbrowser/" />
+    <meta property="og:title" content="inbrowser.ai — Can your browser run AI?" />
+    <meta property="og:description" content="Auto-detect WebGPU hardware, WASM SIMD, and buffer memory limits to determine which AI models run client-side inside your browser tab." />
+    <meta property="og:image" content="https://h3manth.com/ai/inbrowser/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="inbrowser.ai" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@hemanth" />
+    <meta name="twitter:creator" content="@hemanth" />
+    <meta name="twitter:url" content="https://h3manth.com/ai/inbrowser/" />
+    <meta name="twitter:title" content="inbrowser.ai — Can your browser run AI?" />
+    <meta name="twitter:description" content="Auto-detect WebGPU hardware, WASM SIMD, and buffer memory limits to determine which AI models run client-side inside your browser tab." />
+    <meta name="twitter:image" content="https://h3manth.com/ai/inbrowser/og-image.png" />
+
+    <!-- LLM & AI Agent Discoverability (llmstxt.org) -->
+    <link rel="llms" href="/ai/inbrowser/llms.txt" type="text/plain" title="LLM Agent Discoverability Specification" />
+
+    <!-- Preconnect & Non-blocking Font Loading for Lighthouse 100 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    </noscript>
+
+    <!-- JSON-LD Structured Data for Search Engines & LLMs -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "inbrowser.ai",
+      "url": "https://h3manth.com/ai/inbrowser/",
+      "description": "Auto-detect WebGPU hardware, WASM SIMD, and buffer memory limits to determine which AI models can run directly inside your browser tab without servers or terminal installs.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web Browser",
+      "browserRequirements": "Requires WebGPU, WebGL, or WebAssembly support",
+      "inLanguage": "en",
+      "author": {
+        "@type": "Person",
+        "name": "Hemanth HM",
+        "url": "https://h3manth.com"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Hardware capability auto-detection (WebGPU limits, shader-f16, RAM, WASM SIMD)",
+        "In-browser AI model compatibility matrix with real-time scoring",
+        "Interactive hardware simulator with device presets (M3 Max, RTX 4080, Chromebook, Mobile)",
+        "Live GPU compute shader and CPU WASM stress benchmarks",
+        "Client-side text generation and embedding inference runner via Transformers.js",
+        "Copyable code snippets for WebLLM, Transformers.js, Wllama, and TensorFlow.js"
+      ]
+    }
+    </script>
   </head>
-  <body>
+  <body class="bg-[#000000] text-[#EDEDED] antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

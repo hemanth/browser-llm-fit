@@ -1,0 +1,17 @@
+<IfModule mod_headers.c>
+  # Cross-Origin Isolation for WebAssembly Threads (SharedArrayBuffer)
+  Header set Cross-Origin-Opener-Policy "same-origin"
+  Header set Cross-Origin-Embedder-Policy "require-corp"
+
+  # Prevent aggressive caching of HTML to ensure latest deployments load
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+  </FilesMatch>
+
+  # Cache static assets with content hashes
+  <FilesMatch "\.(js|css|wasm|png|jpg|jpeg|gif|ico|svg|woff|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>

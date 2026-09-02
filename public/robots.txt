@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# LLM and Agent discoverability files
+# https://llmstxt.org
+# llms.txt: https://h3manth.com/ai/inbrowser/llms.txt
+# llms-full.txt: https://h3manth.com/ai/inbrowser/llms-full.txt

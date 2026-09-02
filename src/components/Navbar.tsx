@@ -55,12 +55,22 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
           
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-semibold tracking-[-0.28px] text-[#EDEDED]">
-              inbrowser.ai
-            </span>
+            <a
+              href="https://h3manth.com"
+              className="text-sm font-semibold tracking-[-0.28px] text-[#EDEDED] hover:text-white transition-colors"
+            >
+              h3manth.com
+            </a>
             <span className="text-[#333333]">/</span>
-            <span className="text-xs font-normal text-[#707070] hidden sm:inline">
-              browser ai matrix
+            <a
+              href="https://h3manth.com/ai/"
+              className="text-xs font-normal text-[#707070] hover:text-[#EDEDED] transition-colors"
+            >
+              ai
+            </a>
+            <span className="text-[#333333]">/</span>
+            <span className="text-xs font-medium text-[#EDEDED]">
+              inbrowser
             </span>
           </div>
         </div>

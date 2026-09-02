@@ -1,0 +1,26 @@
+{
+  "name": "inbrowser.ai — Can your browser run AI?",
+  "short_name": "inbrowser.ai",
+  "description": "Auto-detect WebGPU hardware, WASM SIMD, and buffer memory limits to determine which AI models can run directly inside your browser tab.",
+  "start_url": "/ai/inbrowser/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/ai/inbrowser/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/ai/inbrowser/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/ai/inbrowser/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
