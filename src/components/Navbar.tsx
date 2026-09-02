@@ -49,21 +49,18 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-40 w-full bg-[#000000]/90 backdrop-blur-md border-b border-[#262626]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         {/* Left: Brand / Title */}
-        <div className="flex items-center space-x-3">
-          {/* Vercel-style geometric triangle logo */}
-          <div className="h-6 w-6 flex items-center justify-center text-white">
-            <svg viewBox="0 0 76 65" height="18" fill="currentColor">
-              <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="#FFFFFF" />
-            </svg>
+        <div className="flex items-center space-x-2.5">
+          <div className="h-5 w-5 rounded bg-[#171717] border border-[#262626] flex items-center justify-center">
+            <span className="w-1.5 h-1.5 rounded-sm bg-[#EDEDED]"></span>
           </div>
           
-          <div className="flex items-center space-x-2.5">
+          <div className="flex items-center space-x-2">
             <span className="text-sm font-semibold tracking-[-0.28px] text-[#EDEDED]">
-              llm-locally
+              canirun.ai
             </span>
             <span className="text-[#333333]">/</span>
-            <span className="text-xs font-normal text-[#8F8F8F] hidden sm:inline">
-              device hardware matrix
+            <span className="text-xs font-normal text-[#707070] hidden sm:inline">
+              browser ai matrix
             </span>
           </div>
         </div>

@@ -1,0 +1,107 @@
+{
+  "updatedAt": "2026-09-02T20:27:35.905Z",
+  "stats": {
+    "transformersJsCount": 50,
+    "webgpuCount": 50,
+    "webllmCount": 135
+  },
+  "topTransformersJs": [
+    {
+      "id": "nomic-ai/nomic-embed-text-v1.5",
+      "downloads": 16175054,
+      "likes": 898
+    },
+    {
+      "id": "nomic-ai/nomic-embed-text-v1",
+      "downloads": 4078128,
+      "likes": 581
+    },
+    {
+      "id": "mixedbread-ai/mxbai-embed-large-v1",
+      "downloads": 3034995,
+      "likes": 824
+    },
+    {
+      "id": "Xenova/all-MiniLM-L6-v2",
+      "downloads": 2519413,
+      "likes": 144
+    },
+    {
+      "id": "Alibaba-NLP/gte-reranker-modernbert-base",
+      "downloads": 2497071,
+      "likes": 98
+    },
+    {
+      "id": "Xenova/bge-base-en-v1.5",
+      "downloads": 2291923,
+      "likes": 10
+    },
+    {
+      "id": "HuggingFaceTB/SmolLM2-135M-Instruct",
+      "downloads": 1378003,
+      "likes": 408
+    },
+    {
+      "id": "WhereIsAI/UAE-Large-V1",
+      "downloads": 1307796,
+      "likes": 237
+    },
+    {
+      "id": "jinaai/jina-reranker-v2-base-multilingual",
+      "downloads": 1154142,
+      "likes": 355
+    },
+    {
+      "id": "onnx-community/Kokoro-82M-v1.0-ONNX",
+      "downloads": 1097740,
+      "likes": 254
+    },
+    {
+      "id": "Xenova/ms-marco-MiniLM-L-6-v2",
+      "downloads": 909064,
+      "likes": 9
+    },
+    {
+      "id": "Alibaba-NLP/gte-large-en-v1.5",
+      "downloads": 896238,
+      "likes": 239
+    },
+    {
+      "id": "AdamCodd/vit-base-nsfw-detector",
+      "downloads": 845705,
+      "likes": 82
+    },
+    {
+      "id": "HuggingFaceTB/SmolLM3-3B-Base",
+      "downloads": 761202,
+      "likes": 173
+    },
+    {
+      "id": "Snowflake/snowflake-arctic-embed-l-v2.0",
+      "downloads": 713066,
+      "likes": 251
+    }
+  ],
+  "availableWebLLM": [
+    "Llama-3.2-1B-Instruct-q4f32_1-MLC",
+    "Llama-3.2-1B-Instruct-q4f16_1-MLC",
+    "Llama-3.2-1B-Instruct-q0f32-MLC",
+    "Llama-3.2-1B-Instruct-q0f16-MLC",
+    "Llama-3.2-3B-Instruct-q4f32_1-MLC",
+    "Llama-3.2-3B-Instruct-q4f16_1-MLC",
+    "Llama-3.1-8B-Instruct-q4f32_1-MLC",
+    "Llama-3.1-8B-Instruct-q4f16_1-MLC",
+    "DeepSeek-R1-Distill-Qwen-1.5B-q4f16_1-MLC",
+    "DeepSeek-R1-Distill-Qwen-1.5B-q4f32_1-MLC",
+    "DeepSeek-R1-Distill-Qwen-7B-q4f16_1-MLC",
+    "DeepSeek-R1-Distill-Qwen-7B-q4f32_1-MLC",
+    "DeepSeek-R1-Distill-Llama-8B-q4f32_1-MLC",
+    "DeepSeek-R1-Distill-Llama-8B-q4f16_1-MLC",
+    "Hermes-2-Theta-Llama-3-8B-q4f16_1-MLC",
+    "Hermes-2-Theta-Llama-3-8B-q4f32_1-MLC",
+    "Hermes-2-Pro-Llama-3-8B-q4f16_1-MLC",
+    "Hermes-2-Pro-Llama-3-8B-q4f32_1-MLC",
+    "Hermes-3-Llama-3.2-3B-q4f32_1-MLC",
+    "Hermes-3-Llama-3.2-3B-q4f16_1-MLC"
+  ]
+}

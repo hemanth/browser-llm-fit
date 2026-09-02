@@ -1257,5 +1257,392 @@ const res = await classifier('Apple unveiled the new M4 chips with neural accele
 ]);
 console.log(res);`
     }
+  },
+
+  // ==================== ADDITIONAL RUNTIME EXPANSIONS ====================
+  {
+    id: 'qwen-2.5-coder-1.5b-instruct',
+    name: 'Qwen 2.5 Coder 1.5B Instruct',
+    developer: 'Alibaba Cloud',
+    family: 'Qwen 2.5 Coder',
+    modality: 'LLM / Text',
+    framework: 'WebLLM',
+    format: 'WebGPU WGSL / MLC',
+    quantization: 'q4f16_1',
+    paramCount: '1.5B',
+    paramValueMillion: 1540,
+    downloadSizeMB: 1050,
+    minRamGB: 4,
+    recommendedRamGB: 8,
+    minVramGB: 2,
+    recommendedVramGB: 3,
+    requiresWebGPU: true,
+    requiresShaderF16: true,
+    minStorageBufferMB: 512,
+    contextWindow: 8192,
+    description: 'Specialized code generation model trained on 5.5 trillion tokens of source code. Delivers fast client-side code autocomplete and refactoring in browser IDEs.',
+    useCases: ['In-browser code completion', 'Bug fixing', 'SQL query generation', 'Unit test writing'],
+    hfUrl: 'https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct',
+    demoAvailable: true,
+    codeSnippet: {
+      framework: 'WebLLM',
+      lang: 'javascript',
+      code: `import * as webllm from "@mlc-ai/web-llm";
+
+const engine = await webllm.CreateMLCEngine("Qwen2.5-Coder-1.5B-Instruct-q4f16_1-MLC");
+const res = await engine.chat.completions.create({
+  messages: [{ role: "user", content: "Write a high-performance LRU cache class in TypeScript." }]
+});
+console.log(res.choices[0].message.content);`
+    }
+  },
+  {
+    id: 'qwen-2.5-coder-7b-instruct',
+    name: 'Qwen 2.5 Coder 7B Instruct',
+    developer: 'Alibaba Cloud',
+    family: 'Qwen 2.5 Coder',
+    modality: 'LLM / Text',
+    framework: 'WebLLM',
+    format: 'WebGPU WGSL / MLC',
+    quantization: 'q4f16_1',
+    paramCount: '7.6B',
+    paramValueMillion: 7600,
+    downloadSizeMB: 4850,
+    minRamGB: 16,
+    recommendedRamGB: 24,
+    minVramGB: 6.5,
+    recommendedVramGB: 10,
+    requiresWebGPU: true,
+    requiresShaderF16: true,
+    minStorageBufferMB: 2048,
+    contextWindow: 8192,
+    description: 'Flagship open code model competing with larger proprietary models. Capable of end-to-end software architecture synthesis directly in browser memory.',
+    useCases: ['Full-stack code generation', 'Multi-file refactoring', 'Algorithm implementation'],
+    hfUrl: 'https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct',
+    demoAvailable: false,
+    codeSnippet: {
+      framework: 'WebLLM',
+      lang: 'javascript',
+      code: `import * as webllm from "@mlc-ai/web-llm";
+
+const engine = await webllm.CreateMLCEngine("Qwen2.5-Coder-7B-Instruct-q4f16_1-MLC");
+const res = await engine.chat.completions.create({
+  messages: [{ role: "user", content: "Refactor this React hook to support Web Workers..." }]
+});`
+    }
+  },
+  {
+    id: 'llama-3.1-8b-instruct',
+    name: 'Llama 3.1 8B Instruct',
+    developer: 'Meta',
+    family: 'Llama 3.1',
+    modality: 'LLM / Text',
+    framework: 'WebLLM',
+    format: 'WebGPU WGSL / MLC',
+    quantization: 'q4f16_1',
+    paramCount: '8.0B',
+    paramValueMillion: 8030,
+    downloadSizeMB: 4950,
+    minRamGB: 16,
+    recommendedRamGB: 32,
+    minVramGB: 6.8,
+    recommendedVramGB: 10,
+    requiresWebGPU: true,
+    requiresShaderF16: true,
+    minStorageBufferMB: 2048,
+    contextWindow: 8192,
+    description: "Meta's flagship 8B foundation model. Offers exceptional instruction following, general knowledge, and reasoning for high-end Apple Silicon and desktop GPUs.",
+    useCases: ['Comprehensive enterprise assistants', 'Complex logic puzzles', 'Deep analytical synthesis'],
+    hfUrl: 'https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct',
+    demoAvailable: false,
+    codeSnippet: {
+      framework: 'WebLLM',
+      lang: 'javascript',
+      code: `import * as webllm from "@mlc-ai/web-llm";
+
+const engine = await webllm.CreateMLCEngine("Llama-3.1-8B-Instruct-q4f16_1-MLC");
+const res = await engine.chat.completions.create({
+  messages: [{ role: "user", content: "Explain how memory allocation works in modern WebAssembly runtimes." }]
+});`
+    }
+  },
+  {
+    id: 'mistral-7b-instruct-v0.3',
+    name: 'Mistral 7B Instruct v0.3',
+    developer: 'Mistral AI',
+    family: 'Mistral',
+    modality: 'LLM / Text',
+    framework: 'WebLLM',
+    format: 'WebGPU WGSL / MLC',
+    quantization: 'q4f16_1',
+    paramCount: '7.2B',
+    paramValueMillion: 7200,
+    downloadSizeMB: 4600,
+    minRamGB: 16,
+    recommendedRamGB: 24,
+    minVramGB: 6.2,
+    recommendedVramGB: 9,
+    requiresWebGPU: true,
+    requiresShaderF16: true,
+    minStorageBufferMB: 2048,
+    contextWindow: 8192,
+    description: 'Renowned open model from Mistral AI with sliding-window attention and function calling support. Runs on WebGPU workstations.',
+    useCases: ['Tool invocation', 'Data extraction', 'High-throughput chat'],
+    hfUrl: 'https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3',
+    demoAvailable: false,
+    codeSnippet: {
+      framework: 'WebLLM',
+      lang: 'javascript',
+      code: `import * as webllm from "@mlc-ai/web-llm";
+
+const engine = await webllm.CreateMLCEngine("Mistral-7B-Instruct-v0.3-q4f16_1-MLC");
+const res = await engine.chat.completions.create({
+  messages: [{ role: "user", content: "Summarize this RFC specification in three bullet points." }]
+});`
+    }
+  },
+  {
+    id: 'whisper-large-v3-turbo',
+    name: 'Whisper Large v3 Turbo',
+    developer: 'OpenAI',
+    family: 'Whisper',
+    modality: 'Audio / Speech',
+    framework: 'Transformers.js',
+    format: 'ONNX',
+    quantization: 'q4 / fp16',
+    paramCount: '809M',
+    paramValueMillion: 809,
+    downloadSizeMB: 980,
+    minRamGB: 6,
+    recommendedRamGB: 12,
+    minVramGB: 2.5,
+    recommendedVramGB: 4.5,
+    requiresWebGPU: true,
+    requiresShaderF16: true,
+    minStorageBufferMB: 1024,
+    description: "OpenAI's latest Whisper model with trimmed decoder layers. Delivers near-zero word error rate with 4x faster transcription speed on WebGPU.",
+    useCases: ['High-accuracy transcription', 'Live lecture subtitling', 'Multilingual translation'],
+    hfUrl: 'https://huggingface.co/openai/whisper-large-v3-turbo',
+    demoAvailable: false,
+    codeSnippet: {
+      framework: 'Transformers.js v3',
+      lang: 'javascript',
+      code: `import { pipeline } from '@huggingface/transformers';
+
+const transcriber = await pipeline('automatic-speech-recognition', 'onnx-community/whisper-large-v3-turbo', {
+  device: 'webgpu',
+  dtype: 'fp16'
+});
+
+const out = await transcriber(audioUrl);
+console.log('Transcription:', out.text);`
+    }
+  },
+  {
+    id: 'bge-m3-embeddings',
+    name: 'BGE-M3 Multi-Function Embeddings',
+    developer: 'BAAI',
+    family: 'BGE',
+    modality: 'Embeddings',
+    framework: 'Transformers.js',
+    format: 'ONNX',
+    quantization: 'q8',
+    paramCount: '568M',
+    paramValueMillion: 568,
+    downloadSizeMB: 610,
+    minRamGB: 4,
+    recommendedRamGB: 8,
+    minVramGB: 1.2,
+    recommendedVramGB: 2.5,
+    requiresWebGPU: true,
+    requiresShaderF16: false,
+    minStorageBufferMB: 512,
+    description: 'State-of-the-art multilingual embedding model supporting dense, sparse, and multi-vector representations across 100+ languages with 8192 context.',
+    useCases: ['Hybrid dense/sparse RAG', 'Cross-language search', 'Complex document clustering'],
+    hfUrl: 'https://huggingface.co/BAAI/bge-m3',
+    demoAvailable: false,
+    codeSnippet: {
+      framework: 'Transformers.js v3',
+      lang: 'javascript',
+      code: `import { pipeline } from '@huggingface/transformers';
+
+const extractor = await pipeline('feature-extraction', 'Xenova/bge-m3', {
+  device: 'webgpu'
+});
+const embeddings = await extractor('Multi-vector search on WebGPU');`
+    }
+  },
+  {
+    id: 'florence-2-large',
+    name: 'Florence-2 Large',
+    developer: 'Microsoft',
+    family: 'Florence',
+    modality: 'Vision & Multimodal',
+    framework: 'Transformers.js',
+    format: 'ONNX',
+    quantization: 'q8 / fp16',
+    paramCount: '770M',
+    paramValueMillion: 770,
+    downloadSizeMB: 1100,
+    minRamGB: 6,
+    recommendedRamGB: 12,
+    minVramGB: 2.5,
+    recommendedVramGB: 4.5,
+    requiresWebGPU: true,
+    requiresShaderF16: true,
+    minStorageBufferMB: 1024,
+    description: 'Microsoft foundation vision model for advanced visual comprehension, dense region grounding, OCR, and multi-task object segmentation.',
+    useCases: ['Visual document parsing', 'Fine-grained object detection', 'High-detail visual QA'],
+    hfUrl: 'https://huggingface.co/microsoft/Florence-2-large',
+    demoAvailable: false,
+    codeSnippet: {
+      framework: 'Transformers.js v3',
+      lang: 'javascript',
+      code: `import { AutoProcessor, AutoModelForCausalLM } from '@huggingface/transformers';
+
+const model = await AutoModelForCausalLM.from_pretrained('onnx-community/Florence-2-large-ft', {
+  device: 'webgpu',
+  dtype: 'fp16'
+});`
+    }
+  },
+  {
+    id: 'danube-3-500m-chat',
+    name: 'H2O Danube 3 500M Chat (WASM GGUF)',
+    developer: 'H2O.ai',
+    family: 'Danube',
+    modality: 'LLM / Text',
+    framework: 'Wllama',
+    format: 'GGUF',
+    quantization: 'Q4_K_M',
+    paramCount: '500M',
+    paramValueMillion: 500,
+    downloadSizeMB: 330,
+    minRamGB: 1.5,
+    recommendedRamGB: 3,
+    minVramGB: 0,
+    recommendedVramGB: 0,
+    requiresWebGPU: false,
+    requiresShaderF16: false,
+    minStorageBufferMB: 0,
+    contextWindow: 4096,
+    description: 'Compact 500M parameter model trained by H2O.ai. Excellent conversational density for pure CPU execution via WebAssembly SIMD.',
+    useCases: ['Low-end mobile phones', 'Chromebooks', 'Offline browser extensions'],
+    hfUrl: 'https://huggingface.co/h2oai/h2o-danube3-500m-chat',
+    demoAvailable: false,
+    codeSnippet: {
+      framework: 'Wllama (llama.cpp WASM)',
+      lang: 'javascript',
+      code: `import { Wllama } from '@wllama/wllama';
+
+const wllama = new Wllama({ 'single-thread/wllama.wasm': '/wllama.wasm' });
+await wllama.loadModelFromUrl('https://huggingface.co/.../danube3-500m-chat.Q4_K_M.gguf');
+const res = await wllama.createCompletion('Explain gravity in simple terms.');`
+    }
+  },
+  {
+    id: 'mediapipe-gemma-2b',
+    name: 'MediaPipe LLM (Gemma 2B)',
+    developer: 'Google',
+    family: 'Gemma',
+    modality: 'LLM / Text',
+    framework: 'MediaPipe',
+    format: 'ONNX',
+    quantization: 'int8',
+    paramCount: '2.0B',
+    paramValueMillion: 2000,
+    downloadSizeMB: 1550,
+    minRamGB: 4,
+    recommendedRamGB: 8,
+    minVramGB: 2,
+    recommendedVramGB: 3.5,
+    requiresWebGPU: true,
+    requiresShaderF16: false,
+    minStorageBufferMB: 512,
+    contextWindow: 4096,
+    description: "Google's official MediaPipe Web LLM Inference engine. Optimized for WebGPU and CPU WebAssembly with streaming token generation.",
+    useCases: ['Google ecosystem web apps', 'On-device assistant', 'Interactive web tools'],
+    hfUrl: 'https://ai.google.dev/edge/mediapipe/solutions/genai/llm_inference/web_js',
+    demoAvailable: false,
+    codeSnippet: {
+      framework: 'MediaPipe Web',
+      lang: 'javascript',
+      code: `import { FilesetResolver, LlmInference } from '@google/mediapipe-tasks-genai';
+
+const genai = await FilesetResolver.forGenAiTasks('/wasm');
+const llm = await LlmInference.createFromOptions(genai, {
+  baseOptions: { modelAssetPath: '/models/gemma-2b-it-gpu-int8.bin' },
+  maxTokens: 512
+});
+const response = await llm.generateResponse("How do Web Workers work?");`
+    }
+  },
+  {
+    id: 'mediapipe-face-landmarker',
+    name: 'MediaPipe Face Mesh (478 Points)',
+    developer: 'Google',
+    family: 'MediaPipe Vision',
+    modality: 'Vision & Multimodal',
+    framework: 'MediaPipe',
+    format: 'TFJS',
+    quantization: 'fp32',
+    paramCount: '5M',
+    paramValueMillion: 5,
+    downloadSizeMB: 18,
+    minRamGB: 1,
+    recommendedRamGB: 2,
+    minVramGB: 0.1,
+    recommendedVramGB: 0.5,
+    requiresWebGPU: false,
+    requiresShaderF16: false,
+    minStorageBufferMB: 32,
+    description: 'Real-time 478-point 3D facial landmark detection at 60 FPS in browser video streams. Powers filters, eye tracking, and expression detection.',
+    useCases: ['Virtual try-on glasses/makeup', 'Webcam avatar animation', 'Eye gaze tracking'],
+    demoAvailable: false,
+    codeSnippet: {
+      framework: 'MediaPipe Web',
+      lang: 'javascript',
+      code: `import { FaceLandmarker, FilesetResolver } from '@google/mediapipe-tasks-vision';
+
+const vision = await FilesetResolver.forVisionTasks('/wasm');
+const landmarker = await FaceLandmarker.createFromOptions(vision, {
+  baseOptions: { modelAssetPath: '/models/face_landmarker.task' },
+  runningMode: 'VIDEO'
+});`
+    }
+  },
+  {
+    id: 'universal-sentence-encoder',
+    name: 'Universal Sentence Encoder (USE)',
+    developer: 'Google',
+    family: 'USE',
+    modality: 'Embeddings',
+    framework: 'TensorFlow.js',
+    format: 'TFJS',
+    quantization: 'fp32',
+    paramCount: '30M',
+    paramValueMillion: 30,
+    downloadSizeMB: 30,
+    minRamGB: 1,
+    recommendedRamGB: 2,
+    minVramGB: 0.1,
+    recommendedVramGB: 0.3,
+    requiresWebGPU: false,
+    requiresShaderF16: false,
+    minStorageBufferMB: 64,
+    description: "Google's classic Universal Sentence Encoder in TensorFlow.js. Encodes sentences into 512-dimensional vectors with WebGL acceleration.",
+    useCases: ['Fast semantic similarity', 'Intent classification', 'Duplicate text detection'],
+    demoAvailable: false,
+    codeSnippet: {
+      framework: 'TensorFlow.js',
+      lang: 'javascript',
+      code: `import * as tf from '@tensorflow/tfjs';
+import * as use from '@tensorflow-models/universal-sentence-encoder';
+
+await tf.setBackend('webgl');
+const model = await use.load();
+const embeddings = await model.embed(['How are you?', 'What is your status?']);
+embeddings.print();`
+    }
   }
 ];
