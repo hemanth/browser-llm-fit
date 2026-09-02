@@ -374,7 +374,7 @@ export function App() {
       {/* Footer */}
       <footer className="border-t border-[#262626] bg-[#000000] py-6 text-xs text-[#707070]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p>© {new Date().getFullYear()} inbrowser.ai — zero server telemetry</p>
+          <p>© {new Date().getFullYear()} browser-llm-fit — zero server telemetry</p>
           <p>All hardware checks executed client-side in the browser</p>
         </div>
       </footer>

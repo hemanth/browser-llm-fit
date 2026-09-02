@@ -175,7 +175,7 @@ async function generate() {
             <div class="logo-box">
               <div class="logo-dot"></div>
             </div>
-            <span class="brand">inbrowser.ai</span>
+            <span class="brand">browser-llm-fit</span>
             <span style="color: #333333;">/</span>
             <span class="sub-brand">browser ai matrix</span>
           </div>
@@ -191,7 +191,7 @@ async function generate() {
             <div class="badge"><span class="badge-dot"></span>WebLLM MLC</div>
             <div class="badge"><span class="badge-dot"></span>Wllama WASM</div>
           </div>
-          <div class="author">h3manth.com/ai/inbrowser</div>
+          <div class="author">h3manth.com/ai/browser-llm-fit</div>
         </div>
       </body>
     </html>

@@ -1,14 +1,55 @@
 {
-  "name": "inbrowser-ai",
-  "private": true,
-  "version": "0.0.0",
+  "name": "browser-llm-fit",
+  "version": "1.0.0",
+  "description": "Check if an AI model fits the browser hardware (WebGPU, WASM, RAM, shader-f16).",
   "type": "module",
+  "main": "./dist-lib/index.cjs",
+  "module": "./dist-lib/index.mjs",
+  "types": "./dist-lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist-lib/index.d.ts",
+        "default": "./dist-lib/index.mjs"
+      },
+      "require": {
+        "types": "./dist-lib/index.d.ts",
+        "default": "./dist-lib/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist-lib",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build:app": "tsc -b && vite build",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node -e \"import('fs').then(fs => fs.promises.writeFile('dist-lib/index.d.ts', 'export * from \\\"./lib/index.js\\\";\\nexport { default } from \\\"./lib/index.js\\\";\\n'))\"",
+    "build": "npm run build:app && npm run build:lib",
     "lint": "oxlint",
     "preview": "vite preview"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hemanth/browser-llm-fit.git"
+  },
+  "homepage": "https://h3manth.com/ai/browser-llm-fit/",
+  "author": "Hemanth HM <hemanth@h3manth.com> (https://h3manth.com)",
+  "license": "MIT",
+  "keywords": [
+    "webgpu",
+    "llm",
+    "in-browser",
+    "onnx",
+    "webllm",
+    "transformers.js",
+    "wllama",
+    "hardware",
+    "vram",
+    "fit"
+  ],
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",
     "lucide-react": "^1.39.0",

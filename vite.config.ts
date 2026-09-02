@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/ai/inbrowser/',
+  base: '/ai/browser-llm-fit/',
   plugins: [react(), tailwindcss()],
   server: {
     port: 5180,

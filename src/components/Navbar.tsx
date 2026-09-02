@@ -70,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </a>
             <span className="text-[#333333]">/</span>
             <span className="text-xs font-medium text-[#EDEDED]">
-              inbrowser
+              browser-llm-fit
             </span>
           </div>
         </div>

@@ -1,15 +1,16 @@
-# inbrowser.ai — Complete Reference & Machine Documentation
+# browser-llm-fit — Complete Reference & Machine Documentation
 
 > Comprehensive specification of client-side browser hardware constraints, model requirements, evaluation algorithms, and execution runtimes for autonomous AI agents.
 
 ## Application Details
-- Live URL: https://h3manth.com/ai/inbrowser/
-- Repository: https://github.com/hemanth/inbrowser
+- Live URL: https://h3manth.com/ai/browser-llm-fit/
+- Repository: https://github.com/hemanth/browser-llm-fit
+- npm Package: browser-llm-fit
 - Author: Hemanth HM (https://h3manth.com)
 - License: MIT
 
 ## Hardware Detection Architecture
-inbrowser.ai probes browser capabilities without server telemetry:
+browser-llm-fit probes browser capabilities without server telemetry:
 
 1. **WebGPU Probe**:
    - Acquires `GPUAdapter` via `navigator.gpu.requestAdapter({ powerPreference: 'high-performance' })`.
@@ -59,26 +60,3 @@ The compatibility engine calculates an integer score (0-100) and assigns a tier:
 - **all-MiniLM-L6-v2**: 22M parameters, 45 MB download, 384 dimensions. Runtime: Transformers.js.
 - **BGE-M3**: 568M parameters, 610 MB download, 1024 dimensions. Runtime: Transformers.js.
 - **Universal Sentence Encoder**: 30M parameters, 30 MB download, 512 dimensions. Runtime: TensorFlow.js.
-
-## Execution Code Patterns
-
-### Transformers.js v3 (WebGPU with WASM fallback)
-```javascript
-import { pipeline } from '@huggingface/transformers';
-
-const generator = await pipeline('text-generation', 'onnx-community/SmolLM2-135M-Instruct', {
-  device: 'webgpu',
-  dtype: 'q4f16'
-});
-const result = await generator('Hello world', { max_new_tokens: 32 });
-```
-
-### WebLLM (MLC AI WebGPU)
-```javascript
-import * as webllm from "@mlc-ai/web-llm";
-
-const engine = await webllm.CreateMLCEngine("Llama-3.2-1B-Instruct-q4f16_1-MLC");
-const reply = await engine.chat.completions.create({
-  messages: [{ role: "user", content: "Explain WebGPU." }]
-});
-```

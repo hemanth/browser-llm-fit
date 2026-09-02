@@ -1,15 +1,16 @@
-# inbrowser.ai
+# browser-llm-fit
 
 > Auto-detect client hardware capabilities and match against browser-executable AI models across WebGPU, WASM, and ONNX Runtime.
 
 ## Links
-- [Application](https://h3manth.com/ai/inbrowser/): Live interactive hardware matrix and profiler
-- [Full Documentation](https://h3manth.com/ai/inbrowser/llms-full.txt): Comprehensive model specifications and agent discovery guide
-- [Source Code](https://github.com/hemanth/inbrowser): GitHub repository and weekly automated model registry updater
+- [Application](https://h3manth.com/ai/browser-llm-fit/): Live interactive hardware matrix and profiler
+- [Full Documentation](https://h3manth.com/ai/browser-llm-fit/llms-full.txt): Comprehensive model specifications and agent discovery guide
+- [Source Code](https://github.com/hemanth/browser-llm-fit): GitHub repository and automated model registry updater
+- [npm Package](https://www.npmjs.com/package/browser-llm-fit): Node / browser utility module
 - [Author](https://h3manth.com): Hemanth HM
 
 ## Overview
-inbrowser.ai probes client browser capabilities including WebGPU support, shader-f16 floating point support, maximum storage buffer binding size, navigator.deviceMemory, and WASM SIMD/threads. It evaluates 30+ machine learning models to determine which can run client-side inside a browser tab with zero server roundtrips.
+browser-llm-fit probes client browser capabilities including WebGPU support, shader-f16 floating point support, maximum storage buffer binding size, navigator.deviceMemory, and WASM SIMD/threads. It evaluates 30+ machine learning models to determine which can run client-side inside a browser tab with zero server roundtrips.
 
 ## Features
 - Hardware Auto-Detection: Probes navigator.gpu for adapter limits, shader-f16 half-precision, buffer limits, and CPU concurrency.

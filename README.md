@@ -1,76 +1,61 @@
-# inbrowser.ai
+# browser-llm-fit
 
-Probe client device hardware and match browser-compatible LLMs and AI models across WebGPU, WASM, and ONNX Runtime.
+Check if an AI model fits the browser hardware (WebGPU, WASM, RAM, shader-f16).
 
 ```bash
-npm install
+npm install browser-llm-fit
 ```
 
 ## Quick start
 
-```ts
-import { detectHardwareProfile } from './src/utils/hardwareDetector';
-import { evaluateModelCompatibility } from './src/utils/compatibilityChecker';
-import { IN_BROWSER_MODELS } from './src/data/modelsData';
+```js
+import fit from 'browser-llm-fit';
 
-const hardware = await detectHardwareProfile();
-
-const results = IN_BROWSER_MODELS.map((model) => ({
-  model: model.name,
-  score: evaluateModelCompatibility(model, hardware).score,
-  status: evaluateModelCompatibility(model, hardware).tier,
-}));
+const res = await fit('SmolLM2-135M');
+console.log(res.fits); // true
+console.log(res.tier); // 'smooth'
+console.log(res.speed); // '45-65 tokens/sec'
 ```
 
-`detectHardwareProfile()` extracts WebGPU limits, WASM SIMD, and memory headroom. `evaluateModelCompatibility()` calculates suitability scores and bottleneck diagnostics.
+Evaluates WebGPU storage buffer limits, half-precision float (`shader-f16`) availability, VRAM thresholds, and WASM threads to prevent browser tab crashes before loading model weights.
 
-## Hardware simulation sandbox
+## Probe all models on current hardware
 
-```ts
-import { evaluateModelCompatibility } from './src/utils/compatibilityChecker';
+```js
+import fit from 'browser-llm-fit';
 
-const simulation = {
-  isActive: true,
-  ramGB: 8,
-  cpuCores: 8,
-  gpuBackend: 'webgpu-f16' as const,
-  maxStorageBufferMB: 2048,
-  storageAvailableGB: 30,
-  hasWasmSimd: true,
-  downlinkMbps: 100,
-};
+const { hardware, models } = await fit();
 
-const evaluation = evaluateModelCompatibility(model, hardware, simulation);
+console.log(hardware.webgpuDevice, hardware.reportedRamGB);
+console.log(models[0].model.name, models[0].evaluation.score);
 ```
 
-Tests model viability against simulated constraints or device presets (M1/M2/M3, RTX 4080, Chromebook, mobile).
+Returns detected adapter limits and all catalog models sorted by hardware compatibility score.
 
-## Live GPU and CPU diagnostics
+## Test with custom hardware constraints
 
-```ts
-import { runHardwareDiagnostics } from './src/utils/webgpuBenchmark';
+```js
+import fit from 'browser-llm-fit';
 
-const diagnostics = await runHardwareDiagnostics();
-console.log(diagnostics.maxAllocatableBufferMB);
-console.log(diagnostics.gflops);
-```
-
-Allocates memory buffers up to hardware thresholds and executes compute shader matrix multiplications. Falls back to CPU WASM when WebGPU is absent.
-
-## On-device model execution
-
-```ts
-import { pipeline } from '@huggingface/transformers';
-
-const pipe = await pipeline('text-generation', 'onnx-community/SmolLM2-135M-Instruct', {
-  device: 'webgpu',
-  dtype: 'q4f16',
+const res = await fit('Llama-3.2-3B', {
+  ram: 4,
+  gpu: 'wasm-cpu'
 });
 
-const output = await pipe('Explain WebGPU simply:', { max_new_tokens: 32 });
+console.log(res.fits); // false
+console.log(res.headline); // 'Insufficient System RAM'
 ```
 
-Executes inference directly in the browser tab with zero server roundtrips.
+Simulate mobile devices, Chromebooks, or discrete GPUs without physical access.
+
+## Supported runtimes
+
+- **WebLLM** (WebGPU WGSL shaders: Llama 3.2, Qwen 2.5 Coder, DeepSeek-R1 Distill)
+- **Transformers.js v3** (ONNX Runtime Web: SmolLM2, Whisper, Florence-2, BGE-M3)
+- **Wllama** (llama.cpp WASM threads: TinyLlama, Danube 3 GGUF)
+- **MediaPipe** (Web ML: Gemma 2B, Face Mesh)
+- **TensorFlow.js** (WebGL/WebGPU: Universal Sentence Encoder, MobileNet)
+- **Chrome Built-in AI** (`window.ai.languageModel`: Gemini Nano)
 
 ## Automated registry updates
 
@@ -82,7 +67,7 @@ Queries Hugging Face API and WebLLM registries weekly via GitHub Actions to trac
 
 ## Demo
 
-Live: [https://h3manth.com/ai/inbrowser/](https://h3manth.com/ai/inbrowser/)
+Live: [https://h3manth.com/ai/browser-llm-fit/](https://h3manth.com/ai/browser-llm-fit/)
 
 Video walkthrough: [recordings/demo.mp4](recordings/demo.mp4)
 
