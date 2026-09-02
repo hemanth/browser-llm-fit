@@ -2,6 +2,7 @@ import React from 'react';
 import { RotateCcw } from 'lucide-react';
 import type { HardwareSimulation } from '../types/hardware';
 import { HARDWARE_PRESETS, type HardwarePreset } from '../data/presetsData';
+import { Select } from './Select';
 
 interface HardwareSimulatorProps {
   simulation: HardwareSimulation;
@@ -99,20 +100,17 @@ export const HardwareSimulator: React.FC<HardwareSimulatorProps> = ({
         <div className="space-y-1.5">
           <div className="flex justify-between text-[#A1A1A1]">
             <span>GPU Backend</span>
-            <span className="font-mono text-[#EDEDED] text-[11px]">
-              {simulation.gpuBackend === 'webgpu-f16' ? 'WebGPU f16' : simulation.gpuBackend === 'webgpu-nof16' ? 'WebGPU standard' : simulation.gpuBackend === 'webgl' ? 'WebGL' : 'CPU WASM'}
-            </span>
           </div>
-          <select
+          <Select
             value={simulation.gpuBackend}
             onChange={(e) => onUpdateSimulation({ gpuBackend: e.target.value as HardwareSimulation['gpuBackend'], presetName: 'Custom' })}
-            className="w-full bg-[#121212] border border-[#262626] rounded-md px-2.5 py-1.5 text-xs text-[#EDEDED] focus:outline-none focus:border-[#4D4D4D]"
-          >
-            <option value="webgpu-f16">WebGPU + shader-f16</option>
-            <option value="webgpu-nof16">WebGPU (no f16)</option>
-            <option value="webgl">WebGL fallback</option>
-            <option value="wasm-cpu">CPU WASM only</option>
-          </select>
+            options={[
+              { value: 'webgpu-f16', label: 'WebGPU + shader-f16' },
+              { value: 'webgpu-nof16', label: 'WebGPU (no f16)' },
+              { value: 'webgl', label: 'WebGL fallback' },
+              { value: 'wasm-cpu', label: 'CPU WASM only' },
+            ]}
+          />
         </div>
 
         {/* Max Storage Buffer */}

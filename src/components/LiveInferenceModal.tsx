@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Play } from 'lucide-react';
 import type { InBrowserModel } from '../types/model';
+import { Select } from './Select';
 
 interface LiveInferenceModalProps {
   model: InBrowserModel | null;
@@ -175,17 +176,11 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
           {/* Target Model Selector */}
           <div className="space-y-1">
             <label className="text-xs font-normal text-[#A1A1A1]">Target Model</label>
-            <select
+            <Select
               value={selectedModelId}
               onChange={(e) => handleSelectModelChange(e.target.value)}
-              className="w-full bg-[#000000] border border-[#262626] rounded-lg px-2.5 py-1.5 text-xs text-[#EDEDED] font-mono focus:outline-none focus:border-[#4D4D4D]"
-            >
-              {AVAILABLE_TEST_MODELS.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                </option>
-              ))}
-            </select>
+              options={AVAILABLE_TEST_MODELS.map((m) => ({ value: m.id, label: m.name }))}
+            />
           </div>
 
           <div className="flex items-center justify-between text-[11px] font-mono text-[#707070] px-1">

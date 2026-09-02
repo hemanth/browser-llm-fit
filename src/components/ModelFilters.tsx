@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, LayoutGrid, Table, X } from 'lucide-react';
+import { Select } from './Select';
 
 interface ModelFiltersProps {
   searchQuery: string;
@@ -64,20 +65,20 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
 
         {/* Sort & View Mode */}
         <div className="flex items-center space-x-2 shrink-0">
-          <div className="flex items-center bg-[#0A0A0A] border border-[#262626] rounded-lg px-2.5 py-1.5 text-xs text-[#A1A1A1]">
-            <span className="text-[#707070] mr-1.5 text-[11px]">Sort:</span>
-            <select
+          <div className="w-48">
+            <Select
+              label="Sort:"
               value={sortBy}
               onChange={(e) => onSortByChange(e.target.value)}
-              className="bg-transparent text-[#EDEDED] text-xs focus:outline-none cursor-pointer"
-            >
-              <option value="recommended" className="bg-[#0A0A0A] text-[#EDEDED]">Compatibility Score</option>
-              <option value="size-asc" className="bg-[#0A0A0A] text-[#EDEDED]">Size (Smallest)</option>
-              <option value="size-desc" className="bg-[#0A0A0A] text-[#EDEDED]">Size (Largest)</option>
-              <option value="params-asc" className="bg-[#0A0A0A] text-[#EDEDED]">Params (Lowest)</option>
-              <option value="params-desc" className="bg-[#0A0A0A] text-[#EDEDED]">Params (Highest)</option>
-              <option value="ram-asc" className="bg-[#0A0A0A] text-[#EDEDED]">RAM (Lowest)</option>
-            </select>
+              options={[
+                { value: 'recommended', label: 'Compatibility Score' },
+                { value: 'size-asc', label: 'Size (Smallest)' },
+                { value: 'size-desc', label: 'Size (Largest)' },
+                { value: 'params-asc', label: 'Params (Lowest)' },
+                { value: 'params-desc', label: 'Params (Highest)' },
+                { value: 'ram-asc', label: 'RAM (Lowest)' },
+              ]}
+            />
           </div>
 
           <div className="flex items-center bg-[#0A0A0A] border border-[#262626] rounded-lg p-0.5">
@@ -161,20 +162,16 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
 
         {/* Framework & Count */}
         <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-1.5">
-            <span className="text-[#707070] text-[11px]">Runtime:</span>
-            <select
+          <div className="w-44">
+            <Select
+              label="Runtime:"
               value={selectedFramework}
               onChange={(e) => onSelectFramework(e.target.value)}
-              className="bg-[#0A0A0A] border border-[#262626] text-[#A1A1A1] rounded-md px-2 py-1 text-xs focus:outline-none cursor-pointer"
-            >
-              <option value="all">All Runtimes</option>
-              {frameworks.map((f) => (
-                <option key={f} value={f}>
-                  {f}
-                </option>
-              ))}
-            </select>
+              options={[
+                { value: 'all', label: 'All Runtimes' },
+                ...frameworks.map((f) => ({ value: f, label: f }))
+              ]}
+            />
           </div>
 
           <span className="text-[11px] font-mono text-[#707070]">
