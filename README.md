@@ -82,6 +82,10 @@ Queries Hugging Face API and WebLLM registries weekly via GitHub Actions to trac
 
 ## Demo
 
+Live: [https://h3manth.com/ai/inbrowser/](https://h3manth.com/ai/inbrowser/)
+
+Video walkthrough: [recordings/demo.mp4](recordings/demo.mp4)
+
 ```bash
 npm run dev
 ```
