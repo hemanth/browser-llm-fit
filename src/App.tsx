@@ -226,28 +226,28 @@ export function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 space-y-7">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-3.5 sm:px-6 py-5 sm:py-8 space-y-5 sm:space-y-7">
         {/* Minimal Hero Header with Vercel Typographic Hierarchy */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-[#1F1F1F]">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3.5 sm:gap-4 pb-3 border-b border-[#1F1F1F]">
           <div>
-            <h1 className="text-3xl sm:text-4xl text-[#EDEDED]">
+            <h1 className="text-2xl sm:text-4xl text-[#EDEDED] font-semibold tracking-[-1.2px] sm:tracking-[-2.28px]">
               Can your browser run it?
             </h1>
-            <p className="text-sm text-[#707070] mt-1.5 max-w-xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#707070] mt-1 sm:mt-1.5 max-w-xl leading-relaxed">
               Auto-detects WebGPU memory limits, shader features, and WASM threads to determine which AI models run directly inside your browser tab without terminal installs.
             </p>
           </div>
 
-          <div className="flex items-center space-x-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
             <button
               onClick={() => setIsSimulatorOpen(!isSimulatorOpen)}
-              className="h-8 px-3 rounded-md text-xs font-medium bg-[#171717] hover:bg-[#262626] text-[#EDEDED] border border-[#333333] transition-colors"
+              className="flex-1 sm:flex-none h-8 px-3 rounded-md text-xs font-medium bg-[#171717] hover:bg-[#262626] text-[#EDEDED] border border-[#333333] transition-colors text-center"
             >
               {isSimulatorOpen ? 'Hide Simulator' : 'Hardware Simulator'}
             </button>
             <button
               onClick={() => setIsBenchmarkOpen(true)}
-              className="h-8 px-3 rounded-md text-xs font-medium bg-[#EDEDED] hover:bg-[#FFFFFF] text-[#000000] transition-colors"
+              className="flex-1 sm:flex-none h-8 px-3 rounded-md text-xs font-medium bg-[#EDEDED] hover:bg-[#FFFFFF] text-[#000000] transition-colors text-center"
             >
               Run GPU Test
             </button>

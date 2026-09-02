@@ -159,7 +159,7 @@ async function generate() {
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: #398E4A;
+            background: #EDEDED;
           }
           .author {
             font-size: 16px;

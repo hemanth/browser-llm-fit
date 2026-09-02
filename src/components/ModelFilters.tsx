@@ -48,7 +48,7 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#707070] pointer-events-none" />
           <input
             type="text"
-            placeholder="Search models by name, architecture (e.g. Llama, Qwen, Whisper), or task..."
+            placeholder="Search models by name, architecture (e.g. Llama, Qwen, Whisper)..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full bg-[#0A0A0A] border border-[#262626] rounded-lg pl-9 pr-8 py-2 text-xs text-[#EDEDED] placeholder-[#707070] focus:outline-none focus:border-[#4D4D4D] transition-colors"
@@ -64,8 +64,8 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
         </div>
 
         {/* Sort & View Mode */}
-        <div className="flex items-center space-x-2 shrink-0">
-          <div className="w-48">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex-1 sm:w-48">
             <Select
               label="Sort:"
               value={sortBy}
@@ -81,18 +81,7 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
             />
           </div>
 
-          <div className="flex items-center bg-[#0A0A0A] border border-[#262626] rounded-lg p-0.5">
-            <button
-              onClick={() => onViewModeChange('grid')}
-              className={`p-1.5 rounded-md text-xs transition-colors ${
-                viewMode === 'grid'
-                  ? 'bg-[#1F1F1F] text-[#EDEDED]'
-                  : 'text-[#707070] hover:text-[#EDEDED]'
-              }`}
-              title="Grid View"
-            >
-              <LayoutGrid className="h-3.5 w-3.5" />
-            </button>
+          <div className="flex items-center bg-[#0A0A0A] border border-[#262626] rounded-lg p-0.5 shrink-0">
             <button
               onClick={() => onViewModeChange('table')}
               className={`p-1.5 rounded-md text-xs transition-colors ${
@@ -104,19 +93,30 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
             >
               <Table className="h-3.5 w-3.5" />
             </button>
+            <button
+              onClick={() => onViewModeChange('grid')}
+              className={`p-1.5 rounded-md text-xs transition-colors ${
+                viewMode === 'grid'
+                  ? 'bg-[#1F1F1F] text-[#EDEDED]'
+                  : 'text-[#707070] hover:text-[#EDEDED]'
+              }`}
+              title="Grid View"
+            >
+              <LayoutGrid className="h-3.5 w-3.5" />
+            </button>
           </div>
         </div>
       </div>
 
       {/* Modality Tabs */}
-      <div className="flex items-center gap-1 overflow-x-auto pb-1 border-b border-[#1F1F1F] text-xs">
+      <div className="flex items-center gap-1 overflow-x-auto pb-1.5 border-b border-[#1F1F1F] text-xs scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
         {modalities.map((m) => {
           const isSelected = selectedModality === m.id;
           return (
             <button
               key={m.id}
               onClick={() => onSelectModality(m.id)}
-              className={`px-3 py-1.5 text-xs font-normal whitespace-nowrap transition-colors border-b-2 -mb-px flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 text-xs font-normal whitespace-nowrap shrink-0 transition-colors border-b-2 -mb-px flex items-center gap-1.5 ${
                 isSelected
                   ? 'border-[#EDEDED] text-[#EDEDED] font-medium'
                   : 'border-transparent text-[#707070] hover:text-[#A1A1A1]'
@@ -132,10 +132,10 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
       </div>
 
       {/* Status Indicators & Framework Selector */}
-      <div className="flex flex-wrap items-center justify-between gap-3 text-xs pt-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs pt-1">
         {/* Status Dots */}
-        <div className="flex items-center space-x-1.5">
-          <span className="text-[#707070] text-[11px] mr-1">Status:</span>
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+          <span className="text-[#707070] text-[11px] mr-1 shrink-0">Status:</span>
           {[
             { id: 'all', label: 'All', dot: null },
             { id: 'smooth', label: 'Runs Smoothly', dot: 'bg-[#398E4A]' },
@@ -147,7 +147,7 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
               <button
                 key={t.id}
                 onClick={() => onSelectTier(t.id)}
-                className={`h-6 px-2 rounded-md text-[11px] font-normal transition-colors flex items-center gap-1.5 ${
+                className={`h-6 px-2 rounded-md text-[11px] font-normal whitespace-nowrap shrink-0 transition-colors flex items-center gap-1.5 ${
                   isSelected
                     ? 'bg-[#1F1F1F] text-[#EDEDED] font-medium'
                     : 'text-[#707070] hover:text-[#EDEDED] hover:bg-[#121212]'
@@ -161,8 +161,8 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
         </div>
 
         {/* Framework & Count */}
-        <div className="flex items-center space-x-3">
-          <div className="w-44">
+        <div className="flex items-center justify-between sm:justify-end gap-3 pt-1 sm:pt-0">
+          <div className="w-auto flex-1 sm:flex-none sm:w-48">
             <Select
               label="Runtime:"
               value={selectedFramework}
@@ -174,7 +174,7 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
             />
           </div>
 
-          <span className="text-[11px] font-mono text-[#707070]">
+          <span className="text-[11px] font-mono text-[#707070] shrink-0">
             {filteredCount} of {totalModels} models
           </span>
         </div>

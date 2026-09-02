@@ -54,17 +54,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="w-1.5 h-1.5 rounded-sm bg-[#EDEDED]"></span>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5 sm:space-x-2">
             <a
               href="https://h3manth.com"
-              className="text-sm font-semibold tracking-[-0.28px] text-[#EDEDED] hover:text-white transition-colors"
+              className="text-xs sm:text-sm font-semibold tracking-[-0.28px] text-[#EDEDED] hover:text-white transition-colors"
             >
               h3manth.com
             </a>
-            <span className="text-[#333333]">/</span>
+            <span className="text-[#333333] hidden xs:inline">/</span>
             <a
               href="https://h3manth.com/ai/"
-              className="text-xs font-normal text-[#707070] hover:text-[#EDEDED] transition-colors"
+              className="text-xs font-normal text-[#707070] hover:text-[#EDEDED] transition-colors hidden xs:inline"
             >
               ai
             </a>
@@ -76,7 +76,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Center: Device State indicator */}
-        <div className="hidden md:flex items-center space-x-2 text-xs font-normal text-[#A1A1A1]">
+        <div className="hidden lg:flex items-center space-x-2 text-xs font-normal text-[#A1A1A1]">
           {simulation.isActive ? (
             <span className="flex items-center space-x-2 px-2.5 py-1 rounded-full bg-[#171717] border border-[#333333]">
               <span className="w-2 h-2 rounded-full bg-[#FF990A]"></span>
@@ -97,10 +97,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center space-x-1.5">
+        <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
           <button
             onClick={onToggleSimulator}
-            className={`h-8 px-3 rounded-md text-xs font-medium transition-colors border flex items-center gap-1.5 ${
+            className={`h-8 px-2 sm:px-3 rounded-md text-xs font-medium transition-colors border flex items-center gap-1.5 ${
               simulation.isActive
                 ? 'bg-[#171717] text-[#EDEDED] border-[#4D4D4D]'
                 : 'bg-transparent text-[#A1A1A1] hover:text-[#EDEDED] border-[#262626] hover:bg-[#121212]'
@@ -112,18 +112,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={onOpenInference}
-            className="h-8 px-3 rounded-md text-xs font-medium bg-transparent text-[#A1A1A1] hover:text-[#EDEDED] border border-[#262626] hover:bg-[#121212] transition-colors flex items-center gap-1.5"
+            className="hidden sm:flex h-8 px-3 rounded-md text-xs font-medium bg-transparent text-[#A1A1A1] hover:text-[#EDEDED] border border-[#262626] hover:bg-[#121212] transition-colors items-center gap-1.5"
           >
             <Play className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Run Model</span>
+            <span>Run Model</span>
           </button>
 
           <button
             onClick={onOpenBenchmark}
-            className="h-8 px-3 rounded-md text-xs font-medium bg-transparent text-[#A1A1A1] hover:text-[#EDEDED] border border-[#262626] hover:bg-[#121212] transition-colors flex items-center gap-1.5"
+            className="hidden sm:flex h-8 px-3 rounded-md text-xs font-medium bg-transparent text-[#A1A1A1] hover:text-[#EDEDED] border border-[#262626] hover:bg-[#121212] transition-colors items-center gap-1.5"
           >
             <Activity className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">GPU Test</span>
+            <span>GPU Test</span>
           </button>
 
           <button
