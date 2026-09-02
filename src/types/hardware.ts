@@ -37,6 +37,8 @@ export interface HardwareProfile {
   webglRenderer: string;
   webglVendor: string;
   gpuTier: 'High-End' | 'Mid-Range' | 'Entry-Level' | 'Integrated' | 'Unknown';
+  isUnifiedMemory: boolean;
+  effectiveGpuVramGB: number;
 
   // WASM
   hasWasm: boolean;

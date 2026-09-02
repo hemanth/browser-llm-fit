@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, Play } from 'lucide-react';
 import type { InBrowserModel } from '../types/model';
 import { Select } from './Select';
@@ -49,19 +49,19 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
   const [latencyMs, setLatencyMs] = useState<number | null>(null);
   const [deviceUsed, setDeviceUsed] = useState<string>('');
 
-  // Sync selected model when prop changes
-  useEffect(() => {
-    if (model?.testModelId) {
-      setSelectedModelId(model.testModelId);
-      const match = AVAILABLE_TEST_MODELS.find(m => m.id === model.testModelId);
-      if (match) {
-        setInputText(match.defaultPrompt);
-      }
-    } else {
-      setSelectedModelId('onnx-community/SmolLM2-135M-Instruct');
-      setInputText('The future of local in-browser artificial intelligence is');
+  // Sync selected model during render when prop changes
+  const [prevModelId, setPrevModelId] = useState(model?.testModelId);
+  if (model?.testModelId !== prevModelId) {
+    setPrevModelId(model?.testModelId);
+    const newId = model?.testModelId || 'onnx-community/SmolLM2-135M-Instruct';
+    setSelectedModelId(newId);
+    const match = AVAILABLE_TEST_MODELS.find(m => m.id === newId);
+    if (match) {
+      setInputText(match.defaultPrompt);
     }
-  }, [model]);
+    setResult(null);
+    setLatencyMs(null);
+  }
 
   if (!isOpen) return null;
 

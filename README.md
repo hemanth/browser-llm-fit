@@ -1,10 +1,9 @@
-# llm-locally
+# canirun
 
 Probe client device hardware and match browser-compatible LLMs and AI models across WebGPU, WASM, and ONNX Runtime.
 
 ```bash
 npm install
-npm run dev
 ```
 
 ## Quick start
@@ -14,10 +13,8 @@ import { detectHardwareProfile } from './src/utils/hardwareDetector';
 import { evaluateModelCompatibility } from './src/utils/compatibilityChecker';
 import { IN_BROWSER_MODELS } from './src/data/modelsData';
 
-// Auto-detect CPU cores, RAM, WebGPU adapter, shader-f16, and max buffer limits
 const hardware = await detectHardwareProfile();
 
-// Score every model against local device constraints
 const results = IN_BROWSER_MODELS.map((model) => ({
   model: model.name,
   score: evaluateModelCompatibility(model, hardware).score,
@@ -30,60 +27,66 @@ const results = IN_BROWSER_MODELS.map((model) => ({
 ## Hardware simulation sandbox
 
 ```ts
-// Tweak parameters or pick device presets to test model viability
-const simulatedHardware = {
+import { evaluateModelCompatibility } from './src/utils/compatibilityChecker';
+
+const simulation = {
+  isActive: true,
   ramGB: 8,
-  gpuBackend: 'webgpu-f16',
+  cpuCores: 8,
+  gpuBackend: 'webgpu-f16' as const,
   maxStorageBufferMB: 2048,
   storageAvailableGB: 30,
-};
-
-const evaluation = evaluateModelCompatibility(model, hardware, {
-  isActive: true,
-  ...simulatedHardware,
-  cpuCores: 8,
   hasWasmSimd: true,
   downlinkMbps: 100,
-});
+};
+
+const evaluation = evaluateModelCompatibility(model, hardware, simulation);
 ```
 
-Test presets for MacBook Air M1/M2, M3 Max, Gaming RTX 4080, Chromebooks, and flagship smartphones.
+Tests model viability against simulated constraints or device presets (M1/M2/M3, RTX 4080, Chromebook, mobile).
 
-## Live GPU allocation diagnostics
+## Live GPU and CPU diagnostics
 
 ```ts
 import { runHardwareDiagnostics } from './src/utils/webgpuBenchmark';
 
 const diagnostics = await runHardwareDiagnostics();
-console.log(diagnostics.maxAllocatableBufferMB); // e.g. 2048 MB
-console.log(diagnostics.gflops); // e.g. 1450 GFLOPS
+console.log(diagnostics.maxAllocatableBufferMB);
+console.log(diagnostics.gflops);
 ```
 
-Stress-tests buffer allocations directly in VRAM and measures compute shader dispatch latency.
+Allocates memory buffers up to hardware thresholds and executes compute shader matrix multiplications. Falls back to CPU WASM when WebGPU is absent.
 
-## Live in-browser inference
+## On-device model execution
 
 ```ts
 import { pipeline } from '@huggingface/transformers';
 
-const classifier = await pipeline(
-  'sentiment-analysis',
-  'Xenova/distilbert-base-uncased-finetuned-sst-2-english',
-  { device: 'webgpu' }
-);
+const pipe = await pipeline('text-generation', 'onnx-community/SmolLM2-135M-Instruct', {
+  device: 'webgpu',
+  dtype: 'q4f16',
+});
 
-const out = await classifier('Local in-browser AI works seamlessly.');
+const output = await pipe('Explain WebGPU simply:', { max_new_tokens: 32 });
 ```
 
-Executes inference on-device with zero server calls.
+Executes inference directly in the browser tab with zero server roundtrips.
 
-## Supported frameworks
+## Automated registry updates
 
-- Transformers.js v3 (ONNX Runtime Web with WebGPU & WASM SIMD)
-- WebLLM (MLC AI WebGPU WGSL runtime)
-- Wllama (llama.cpp compiled to WebAssembly)
-- MediaPipe Web & TensorFlow.js
-- Chrome Built-in AI (Prompt API / Gemini Nano)
+```bash
+node scripts/update-models.js
+```
+
+Queries Hugging Face API and WebLLM registries weekly via GitHub Actions to track new model weights and quantization builds.
+
+## Demo
+
+```bash
+npm run dev
+```
+
+Starts the local development server on `http://localhost:5180`.
 
 ## License
 

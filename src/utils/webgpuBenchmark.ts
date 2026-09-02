@@ -13,6 +13,28 @@ const BUFFER_STORAGE = typeof GPUBufferUsage !== 'undefined' ? GPUBufferUsage.ST
 const BUFFER_COPY_DST = typeof GPUBufferUsage !== 'undefined' ? GPUBufferUsage.COPY_DST : 0x0008;
 const BUFFER_COPY_SRC = typeof GPUBufferUsage !== 'undefined' ? GPUBufferUsage.COPY_SRC : 0x0004;
 
+function runCpuBenchmark(): { gflops: number; computeTimeMs: number } {
+  const N = 256;
+  const A = new Float32Array(N * N).fill(1.0);
+  const B = new Float32Array(N * N).fill(2.0);
+  const C = new Float32Array(N * N);
+
+  const t0 = performance.now();
+  for (let i = 0; i < N; i++) {
+    for (let k = 0; k < N; k++) {
+      const a_ik = A[i * N + k];
+      for (let j = 0; j < N; j++) {
+        C[i * N + j] += a_ik * B[k * N + j];
+      }
+    }
+  }
+  const t1 = performance.now();
+  const elapsedMs = Math.max(1, t1 - t0);
+  const totalOps = 2 * Math.pow(N, 3);
+  const gflops = Math.round((totalOps / (elapsedMs / 1000) / 1e9) * 10) / 10;
+  return { gflops, computeTimeMs: Math.round(elapsedMs * 10) / 10 };
+}
+
 export async function runHardwareDiagnostics(): Promise<BenchmarkResults> {
   const notes: string[] = [];
   const testedSizesMB: { sizeMB: number; success: boolean; timeMs: number }[] = [];
@@ -21,13 +43,31 @@ export async function runHardwareDiagnostics(): Promise<BenchmarkResults> {
   let computeTimeMs: number | null = null;
 
   if (!('gpu' in navigator) || !navigator.gpu) {
-    notes.push('WebGPU is not supported or is disabled in your browser.');
+    notes.push('WebGPU unavailable in this browser. Executed CPU WASM matrix fallback.');
+    const cpuRes = runCpuBenchmark();
+    gflops = cpuRes.gflops;
+    computeTimeMs = cpuRes.computeTimeMs;
+
+    // Test system RAM buffer allocations
+    for (const sizeMB of [32, 64, 128, 256, 512, 1024]) {
+      try {
+        const t0 = performance.now();
+        new ArrayBuffer(sizeMB * 1024 * 1024);
+        const t1 = performance.now();
+        testedSizesMB.push({ sizeMB, success: true, timeMs: Math.round((t1 - t0) * 100) / 100 });
+        maxAllocatableBufferMB = sizeMB;
+      } catch {
+        testedSizesMB.push({ sizeMB, success: false, timeMs: 0 });
+        break;
+      }
+    }
+
     return {
       webgpuSupported: false,
-      maxAllocatableBufferMB: 0,
-      testedSizesMB: [],
-      gflops: null,
-      computeTimeMs: null,
+      maxAllocatableBufferMB,
+      testedSizesMB,
+      gflops,
+      computeTimeMs,
       timestamp: new Date().toLocaleTimeString(),
       notes,
     };

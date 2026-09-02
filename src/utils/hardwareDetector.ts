@@ -276,6 +276,13 @@ export async function detectHardwareProfile(): Promise<HardwareProfile> {
 
   const gpuTier = evaluateGpuTier(webgpuDevice || webgl.renderer, hasWebGPU, hasShaderF16);
 
+  const isUnified = webgl.renderer.toLowerCase().includes('apple') || (os === 'macOS' && cpuArch === 'ARM64') || os === 'iOS';
+  const effectiveGpuVramGB = isUnified
+    ? Math.round(estimatedRamGB * 0.75 * 10) / 10
+    : webgpuLimits
+      ? Math.max(2, Math.round((webgpuLimits.maxStorageBufferBindingSize / (1024 * 1024 * 1024)) * 3 * 10) / 10)
+      : 2;
+
   return {
     platform: navigator.platform || os,
     os,
@@ -298,6 +305,8 @@ export async function detectHardwareProfile(): Promise<HardwareProfile> {
     webglRenderer: webgl.renderer,
     webglVendor: webgl.vendor,
     gpuTier,
+    isUnifiedMemory: isUnified,
+    effectiveGpuVramGB,
     hasWasm: typeof WebAssembly === 'object',
     hasWasmSimd: checkWasmSimd(),
     hasWasmThreads: checkWasmThreads(),

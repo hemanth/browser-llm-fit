@@ -47,36 +47,37 @@ export function App() {
   const [isBenchmarkOpen, setIsBenchmarkOpen] = useState(false);
   const [isInferenceOpen, setIsInferenceOpen] = useState(false);
 
-  // Auto-detect hardware on mount
-  const loadHardware = async () => {
-    setLoadingHardware(true);
-    try {
-      const profile = await detectHardwareProfile();
-      setHardware(profile);
+  const syncProfileToState = (profile: HardwareProfile) => {
+    setHardware(profile);
+    setLoadingHardware(false);
+    setSimulation((prev) => ({
+      ...prev,
+      ramGB: profile.reportedRamGB || profile.estimatedRamGB,
+      cpuCores: profile.cpuCores,
+      gpuBackend: profile.hasWebGPU
+        ? (profile.hasShaderF16 ? 'webgpu-f16' : 'webgpu-nof16')
+        : 'wasm-cpu',
+      maxStorageBufferMB: profile.webgpuLimits
+        ? Math.round(profile.webgpuLimits.maxStorageBufferBindingSize / (1024 * 1024))
+        : 128,
+      storageAvailableGB: profile.storageAvailableGB ?? 25,
+      downlinkMbps: profile.downlinkMbps ?? 50,
+    }));
+  };
 
-      // Pre-seed simulation state with detected values
-      setSimulation((prev) => ({
-        ...prev,
-        ramGB: profile.reportedRamGB || profile.estimatedRamGB,
-        cpuCores: profile.cpuCores,
-        gpuBackend: profile.hasWebGPU
-          ? (profile.hasShaderF16 ? 'webgpu-f16' : 'webgpu-nof16')
-          : 'wasm-cpu',
-        maxStorageBufferMB: profile.webgpuLimits
-          ? Math.round(profile.webgpuLimits.maxStorageBufferBindingSize / (1024 * 1024))
-          : 128,
-        storageAvailableGB: profile.storageAvailableGB ?? 25,
-        downlinkMbps: profile.downlinkMbps ?? 50,
-      }));
-    } catch (err) {
-      console.error('Failed to detect hardware', err);
-    } finally {
-      setLoadingHardware(false);
-    }
+  const refreshHardware = () => {
+    setLoadingHardware(true);
+    detectHardwareProfile().then(syncProfileToState).catch(console.error);
   };
 
   useEffect(() => {
-    loadHardware();
+    let active = true;
+    detectHardwareProfile().then((profile) => {
+      if (active) syncProfileToState(profile);
+    }).catch(console.error);
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Preset selector
@@ -216,7 +217,7 @@ export function App() {
         hardware={hardware}
         simulation={simulation}
         onToggleSimulator={() => setIsSimulatorOpen(!isSimulatorOpen)}
-        onRefreshHardware={loadHardware}
+        onRefreshHardware={refreshHardware}
         onOpenBenchmark={() => setIsBenchmarkOpen(true)}
         onOpenInference={() => {
           setTestModel(null);
