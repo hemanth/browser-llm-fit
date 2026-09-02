@@ -26,7 +26,7 @@ export const IN_BROWSER_MODELS: InBrowserModel[] = [
     useCases: ['Instruction following', 'On-device text completion', 'Proofreading', 'IoT / Low-spec web apps'],
     hfUrl: 'https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct',
     demoAvailable: true,
-    testModelId: 'HuggingFaceTB/SmolLM2-135M-Instruct',
+    testModelId: 'onnx-community/SmolLM2-135M-Instruct',
     codeSnippet: {
       framework: 'Transformers.js v3',
       lang: 'javascript',
