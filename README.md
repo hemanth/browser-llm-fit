@@ -1,6 +1,12 @@
+
 # browser-llm-fit
 
 Check if an AI model fits the browser hardware (WebGPU, WASM, RAM, shader-f16).
+
+
+https://github.com/user-attachments/assets/f4ceae3a-a2b3-4955-bec2-36de9238f56a
+
+
 
 ```bash
 npm install browser-llm-fit
@@ -45,8 +51,7 @@ Simulates low-memory phones, Chromebooks, or WASM CPU fallback without physical 
 ## Demo
 
 - Live: [https://h3manth.com/ai/browser-llm-fit/](https://h3manth.com/ai/browser-llm-fit/)
-- Video: [recordings/demo.mp4](recordings/demo.mp4)
-
+  
 ```bash
 npm run dev
 ```
