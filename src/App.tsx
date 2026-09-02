@@ -39,7 +39,7 @@ export function App() {
   const [selectedFramework, setSelectedFramework] = useState('all');
   const [selectedTier, setSelectedTier] = useState('all');
   const [sortBy, setSortBy] = useState('recommended');
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
 
   // Modals
   const [codeModel, setCodeModel] = useState<InBrowserModel | null>(null);
