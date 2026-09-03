@@ -14,6 +14,8 @@ import { ModelTableView } from './components/ModelTableView';
 import { CodeSnippetModal } from './components/CodeSnippetModal';
 import { LiveBenchmarkModal } from './components/LiveBenchmarkModal';
 import { LiveInferenceModal } from './components/LiveInferenceModal';
+import { NpmModuleSection } from './components/NpmModuleSection';
+import { Terminal } from 'lucide-react';
 
 export function App() {
   const [hardware, setHardware] = useState<HardwareProfile | null>(null);
@@ -239,6 +241,13 @@ export function App() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+            <a
+              href="#npm-module"
+              className="hidden md:flex h-8 px-3 rounded-md text-xs font-medium bg-transparent hover:bg-[#171717] text-[#A1A1A1] hover:text-[#EDEDED] border border-[#262626] transition-colors items-center gap-1.5"
+            >
+              <Terminal className="h-3.5 w-3.5" />
+              <span>npm module</span>
+            </a>
             <button
               onClick={() => setIsSimulatorOpen(!isSimulatorOpen)}
               className="flex-1 sm:flex-none h-8 px-3 rounded-md text-xs font-medium bg-[#171717] hover:bg-[#262626] text-[#EDEDED] border border-[#333333] transition-colors text-center"
@@ -349,8 +358,13 @@ export function App() {
           )}
         </div>
 
+        {/* Programmatic NPM Module Integration */}
+        <div id="npm-module">
+          <NpmModuleSection />
+        </div>
+
         {/* Minimal Vercel Architecture Reference */}
-        <div className="mt-12 p-5 rounded-xl bg-[#0A0A0A] border border-[#262626] text-xs text-[#707070] space-y-3">
+        <div className="mt-8 p-5 rounded-xl bg-[#0A0A0A] border border-[#262626] text-xs text-[#707070] space-y-3">
           <h3 className="text-xs font-medium text-[#EDEDED] uppercase tracking-wider">
             In-Browser AI Execution Architecture
           </h3>
