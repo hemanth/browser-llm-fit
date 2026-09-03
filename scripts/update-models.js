@@ -1,8 +1,9 @@
 /**
- * Automated Model List Updater
- * 
- * Fetches latest in-browser compatible models from Hugging Face API (transformers.js, webgpu tags)
- * and WebLLM model registries, validates their configurations, and synchronizes the catalog.
+ * Automated In-Browser Model Catalog & Registry Synchronizer
+ *
+ * Runs weekly via GitHub Actions (.github/workflows/update-models.yml).
+ * Queries Hugging Face API (transformers.js, webgpu tags) and MLC WebLLM registry
+ * to keep the inbrowser/browser-llm-fit catalog synchronized with upstream releases.
  */
 
 import fs from 'fs';
@@ -12,72 +13,87 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function fetchHFModels(tag) {
+async function fetchHF(filter) {
   try {
-    const url = `https://huggingface.co/api/models?filter=${tag}&sort=downloads&direction=-1&limit=50`;
+    const url = `https://huggingface.co/api/models?filter=${filter}&sort=downloads&direction=-1&limit=50`;
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'canirun-ai-model-updater' }
+      headers: { 'User-Agent': 'browser-llm-fit-updater/1.0' }
     });
-    if (!res.ok) {
-      console.warn(`Failed to fetch HF tag: ${tag} (${res.status})`);
-      return [];
-    }
+    if (!res.ok) return [];
     return await res.json();
   } catch (err) {
-    console.error(`Error querying Hugging Face API for ${tag}:`, err.message);
+    console.warn(`HF query failed for ${filter}:`, err.message);
     return [];
   }
 }
 
-async function fetchWebLLMConfig() {
+async function fetchWebLLM() {
   try {
     const url = 'https://raw.githubusercontent.com/mlc-ai/web-llm/main/src/config.ts';
     const res = await fetch(url);
     if (!res.ok) return [];
     const text = await res.text();
-    // Extract model IDs matching "*-MLC"
     const matches = text.match(/model_id:\s*["']([^"']+-MLC)["']/g) || [];
-    return matches.map(m => m.replace(/model_id:\s*["']/, '').replace(/["']/, ''));
+    return [...new Set(matches.map(m => m.replace(/model_id:\s*["']/, '').replace(/["']/, '')))];
   } catch (err) {
-    console.warn('Could not fetch WebLLM config:', err.message);
+    console.warn('WebLLM config query failed:', err.message);
     return [];
   }
 }
 
-async function run() {
-  console.log('🔍 Fetching latest in-browser AI models...');
+async function update() {
+  console.log('🔄 Checking upstream model registries for new in-browser weights...');
 
   const [transformersModels, webgpuModels, webllmModels] = await Promise.all([
-    fetchHFModels('transformers.js'),
-    fetchHFModels('webgpu'),
-    fetchWebLLMConfig()
+    fetchHF('transformers.js'),
+    fetchHF('webgpu'),
+    fetchWebLLM()
   ]);
 
-  console.log(`✓ Retrieved ${transformersModels.length} transformers.js models from Hugging Face`);
-  console.log(`✓ Retrieved ${webgpuModels.length} webgpu tagged models from Hugging Face`);
-  console.log(`✓ Retrieved ${webllmModels.length} models from WebLLM registry`);
+  console.log(`✓ Hugging Face (transformers.js): ${transformersModels.length} models`);
+  console.log(`✓ Hugging Face (webgpu):          ${webgpuModels.length} models`);
+  console.log(`✓ WebLLM MLC Registry:            ${webllmModels.length} models`);
 
-  const manifest = {
-    updatedAt: new Date().toISOString(),
-    stats: {
-      transformersJsCount: transformersModels.length,
-      webgpuCount: webgpuModels.length,
+  // Load existing modelsData.ts
+  const modelsDataPath = path.resolve(__dirname, '../src/data/modelsData.ts');
+  const modelsDataContent = fs.readFileSync(modelsDataPath, 'utf8');
+
+  // Find newly trending models that aren't yet cataloged
+  const newHF = transformersModels
+    .filter(m => !modelsDataContent.includes(m.id) && m.downloads > 500)
+    .slice(0, 10);
+
+  const newWebLLM = webllmModels
+    .filter(id => !modelsDataContent.includes(id))
+    .slice(0, 10);
+
+  const syncReport = {
+    lastCheckedAt: new Date().toISOString(),
+    totalActiveInCatalog: (modelsDataContent.match(/id:\s*["'][^"']+["']/g) || []).length,
+    upstream: {
+      hfTransformersJsCount: transformersModels.length,
+      hfWebgpuCount: webgpuModels.length,
       webllmCount: webllmModels.length,
     },
-    topTransformersJs: transformersModels.slice(0, 15).map(m => ({
+    topHFModels: transformersModels.slice(0, 20).map(m => ({
       id: m.id,
       downloads: m.downloads,
       likes: m.likes
     })),
-    availableWebLLM: webllmModels.slice(0, 20)
+    webllmRegistry: webllmModels,
+    untrackedCandidates: {
+      transformersJs: newHF.map(m => ({ id: m.id, downloads: m.downloads })),
+      webllm: newWebLLM
+    }
   };
 
-  const outputPath = path.resolve(__dirname, '../src/data/registry-sync.json');
-  fs.writeFileSync(outputPath, JSON.stringify(manifest, null, 2));
-  console.log(`✓ Registry sync written to ${outputPath}`);
+  const syncPath = path.resolve(__dirname, '../src/data/registry-sync.json');
+  fs.writeFileSync(syncPath, JSON.stringify(syncReport, null, 2), 'utf8');
+  console.log(`✓ Synced registry report to ${syncPath}`);
+  console.log(`✓ Total cataloged models in browser-llm-fit: ${syncReport.totalActiveInCatalog}`);
 }
 
-run().catch(err => {
-  console.error('Fatal error during model update:', err);
+update().catch(err => {
+  console.error('Update script failed:', err);
   process.exit(1);
 });

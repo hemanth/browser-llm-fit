@@ -36,7 +36,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/data/registry-sync.json
+          git add src/data/
           if git diff --staged --quiet; then
             echo "No model changes detected."
           else
