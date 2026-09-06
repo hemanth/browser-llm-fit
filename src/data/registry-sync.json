@@ -1,5 +1,5 @@
 {
-  "lastCheckedAt": "2026-09-03T04:39:26.410Z",
+  "lastCheckedAt": "2026-09-06T02:11:32.199Z",
   "totalActiveInCatalog": 61,
   "upstream": {
     "hfTransformersJsCount": 50,
@@ -9,102 +9,102 @@
   "topHFModels": [
     {
       "id": "nomic-ai/nomic-embed-text-v1.5",
-      "downloads": 16175054,
-      "likes": 899
+      "downloads": 16523260,
+      "likes": 901
     },
     {
       "id": "nomic-ai/nomic-embed-text-v1",
-      "downloads": 4078128,
-      "likes": 581
+      "downloads": 3887050,
+      "likes": 582
     },
     {
       "id": "mixedbread-ai/mxbai-embed-large-v1",
-      "downloads": 3034995,
-      "likes": 824
-    },
-    {
-      "id": "Xenova/all-MiniLM-L6-v2",
-      "downloads": 2519413,
-      "likes": 144
+      "downloads": 2953126,
+      "likes": 825
     },
     {
       "id": "Alibaba-NLP/gte-reranker-modernbert-base",
-      "downloads": 2497071,
+      "downloads": 2728127,
       "likes": 98
     },
     {
+      "id": "Xenova/all-MiniLM-L6-v2",
+      "downloads": 2651943,
+      "likes": 144
+    },
+    {
       "id": "Xenova/bge-base-en-v1.5",
-      "downloads": 2291923,
+      "downloads": 2348234,
       "likes": 10
     },
     {
       "id": "HuggingFaceTB/SmolLM2-135M-Instruct",
-      "downloads": 1378003,
-      "likes": 408
+      "downloads": 1392739,
+      "likes": 413
     },
     {
       "id": "WhereIsAI/UAE-Large-V1",
-      "downloads": 1307796,
+      "downloads": 1208905,
       "likes": 237
     },
     {
       "id": "jinaai/jina-reranker-v2-base-multilingual",
-      "downloads": 1154142,
+      "downloads": 1169366,
       "likes": 355
     },
     {
       "id": "onnx-community/Kokoro-82M-v1.0-ONNX",
-      "downloads": 1097740,
-      "likes": 254
+      "downloads": 1128466,
+      "likes": 256
     },
     {
       "id": "Xenova/ms-marco-MiniLM-L-6-v2",
-      "downloads": 909064,
+      "downloads": 1087782,
       "likes": 9
     },
     {
       "id": "Alibaba-NLP/gte-large-en-v1.5",
-      "downloads": 896238,
+      "downloads": 928045,
       "likes": 239
     },
     {
       "id": "AdamCodd/vit-base-nsfw-detector",
-      "downloads": 845705,
+      "downloads": 893827,
       "likes": 82
     },
     {
       "id": "HuggingFaceTB/SmolLM3-3B-Base",
-      "downloads": 761202,
+      "downloads": 846141,
       "likes": 173
     },
     {
       "id": "Snowflake/snowflake-arctic-embed-l-v2.0",
-      "downloads": 713066,
+      "downloads": 744021,
       "likes": 251
     },
     {
       "id": "Xenova/whisper-tiny.en",
-      "downloads": 703803,
+      "downloads": 734090,
       "likes": 27
     },
     {
-      "id": "briaai/RMBG-2.0",
-      "downloads": 661576,
-      "likes": 1400
-    },
-    {
-      "id": "llava-hf/llava-onevision-qwen2-0.5b-ov-hf",
-      "downloads": 598800,
-      "likes": 59
-    },
-    {
       "id": "Xenova/whisper-tiny",
-      "downloads": 587522,
+      "downloads": 681952,
       "likes": 13
     },
     {
+      "id": "briaai/RMBG-2.0",
+      "downloads": 671514,
+      "likes": 1412
+    },
+    {
+      "id": "mixedbread-ai/mxbai-rerank-xsmall-v1",
+      "downloads": 600130,
+      "likes": 58
+    },
+    {
       "id": "Snowflake/snowflake-arctic-embed-s",
-      "downloads": 573345,
+      "downloads": 579331,
       "likes": 25
     }
   ],
@@ -249,43 +249,43 @@
     "transformersJs": [
       {
         "id": "Alibaba-NLP/gte-reranker-modernbert-base",
-        "downloads": 2497071
+        "downloads": 2728127
       },
       {
         "id": "Xenova/bge-base-en-v1.5",
-        "downloads": 2291923
+        "downloads": 2348234
       },
       {
         "id": "WhereIsAI/UAE-Large-V1",
-        "downloads": 1307796
+        "downloads": 1208905
       },
       {
         "id": "jinaai/jina-reranker-v2-base-multilingual",
-        "downloads": 1154142
+        "downloads": 1169366
       },
       {
         "id": "onnx-community/Kokoro-82M-v1.0-ONNX",
-        "downloads": 1097740
+        "downloads": 1128466
       },
       {
         "id": "Xenova/ms-marco-MiniLM-L-6-v2",
-        "downloads": 909064
+        "downloads": 1087782
       },
       {
         "id": "Alibaba-NLP/gte-large-en-v1.5",
-        "downloads": 896238
+        "downloads": 928045
       },
       {
         "id": "AdamCodd/vit-base-nsfw-detector",
-        "downloads": 845705
+        "downloads": 893827
       },
       {
         "id": "HuggingFaceTB/SmolLM3-3B-Base",
-        "downloads": 761202
+        "downloads": 846141
       },
       {
         "id": "Snowflake/snowflake-arctic-embed-l-v2.0",
-        "downloads": 713066
+        "downloads": 744021
       }
     ],
     "webllm": [
