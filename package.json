@@ -1,6 +1,6 @@
 {
   "name": "browser-llm-fit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Check if an AI model fits the browser hardware (WebGPU, WASM, RAM, shader-f16).",
   "type": "module",
   "main": "./dist-lib/index.cjs",
