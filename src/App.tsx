@@ -19,6 +19,7 @@ import { Terminal } from 'lucide-react';
 
 export function App() {
   const [hardware, setHardware] = useState<HardwareProfile | null>(null);
+  const [hardwareError, setHardwareError] = useState<string | null>(null);
   const [loadingHardware, setLoadingHardware] = useState<boolean>(true);
 
   // Simulation state
@@ -50,6 +51,7 @@ export function App() {
   const [isInferenceOpen, setIsInferenceOpen] = useState(false);
 
   const syncProfileToState = (profile: HardwareProfile) => {
+    setHardwareError(null);
     setHardware(profile);
     setLoadingHardware(false);
     setSimulation((prev) => ({
@@ -67,16 +69,21 @@ export function App() {
     }));
   };
 
+  const handleHardwareError = (error: unknown) => {
+    setLoadingHardware(false);
+    setHardwareError(error instanceof Error ? error.message : 'Hardware detection failed.');
+  };
+
   const refreshHardware = () => {
     setLoadingHardware(true);
-    detectHardwareProfile().then(syncProfileToState).catch(console.error);
+    detectHardwareProfile().then(syncProfileToState).catch(handleHardwareError);
   };
 
   useEffect(() => {
     let active = true;
     detectHardwareProfile().then((profile) => {
       if (active) syncProfileToState(profile);
-    }).catch(console.error);
+    }).catch(error => { if (active) handleHardwareError(error); });
     return () => {
       active = false;
     };
@@ -263,6 +270,10 @@ export function App() {
           </div>
         </div>
 
+        {hardwareError && <div role="alert" className="text-sm text-red-400">
+          Hardware detection failed: {hardwareError}
+          <button onClick={refreshHardware} className="ml-3 underline">Retry</button>
+        </div>}
         {/* Hardware Dashboard */}
         <HardwareDashboard
           hardware={hardware}
@@ -406,7 +417,8 @@ export function App() {
       />
 
       {/* Live In-Browser Model Runner Modal */}
-      <LiveInferenceModal
+      {isInferenceOpen && <LiveInferenceModal
+        key={testModel?.id ?? 'default'}
         model={testModel}
         isOpen={isInferenceOpen}
         onClose={() => {
@@ -414,7 +426,8 @@ export function App() {
           setTestModel(null);
         }}
         hasWebGPU={hardware?.hasWebGPU ?? false}
-      />
+        hasShaderF16={hardware?.hasShaderF16 ?? false}
+      />}
     </div>
   );
 }

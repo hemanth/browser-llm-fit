@@ -1,3 +1,4 @@
+import { getDemoModel } from '../data/demoModels';
 import React, { useState } from 'react';
 import { 
   Code, 
@@ -143,7 +144,7 @@ export const ModelCard: React.FC<ModelCardProps> = ({
           </button>
         </div>
 
-        {model.testModelId && evaluation.tier !== 'incompatible' ? (
+        {getDemoModel(model.testModelId) && evaluation.tier !== 'incompatible' ? (
           <button
             onClick={() => onTestLive && onTestLive(model)}
             className="h-7 px-3 rounded-md bg-[#EDEDED] hover:bg-[#FFFFFF] text-[#000000] text-xs font-medium transition-colors flex items-center gap-1.5"

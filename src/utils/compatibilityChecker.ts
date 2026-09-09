@@ -1,5 +1,5 @@
-import type { HardwareProfile, HardwareSimulation } from '../types/hardware';
-import type { CompatibilityCheck, CompatibilityEvaluation, CompatibilityTier, InBrowserModel } from '../types/model';
+import type { HardwareProfile, HardwareSimulation } from '../types/hardware.js';
+import type { CompatibilityCheck, CompatibilityEvaluation, CompatibilityTier, InBrowserModel } from '../types/model.js';
 
 export function evaluateModelCompatibility(
   model: InBrowserModel,
@@ -27,7 +27,7 @@ export function evaluateModelCompatibility(
 
   const effectiveStorageAvailGB = isSim 
     ? simulation.storageAvailableGB 
-    : (hardware.storageAvailableGB ?? 20);
+    : hardware.storageAvailableGB;
 
   const effectiveDownlinkMbps = isSim 
     ? simulation.downlinkMbps 
@@ -104,6 +104,33 @@ export function evaluateModelCompatibility(
     });
   }
 
+  if (!effectiveHasWebGPU && model.framework !== 'TensorFlow.js') {
+    const hasSimd = isSim ? simulation.hasWasmSimd : hardware.hasWasmSimd;
+    const requiresSimd = model.framework === 'Transformers.js';
+    const hasRuntime = hardware.hasWasm && (!requiresSimd || hasSimd);
+    checks.push({
+      name: requiresSimd ? 'WASM SIMD Runtime' : 'WASM Runtime', passed: hasRuntime,
+      detail: hasRuntime ? 'Required WebAssembly features are available.' : `This CPU backend requires WebAssembly${requiresSimd ? ' with SIMD support' : ''}.`,
+      severity: hasRuntime ? 'ok' : 'error',
+    });
+    if (!hasRuntime) { hardBlock = true; score -= 50; }
+  }
+
+  if (effectiveHasWebGPU && model.minVramGB > 0) {
+    const suppliedVram = isSim ? simulation.vramGB : undefined;
+    if (suppliedVram !== undefined) {
+      const sufficient = suppliedVram >= model.minVramGB;
+      checks.push({ name: 'GPU Memory Budget', passed: sufficient,
+        detail: `Supplied budget: ${suppliedVram}GB; minimum: ${model.minVramGB}GB.`,
+        severity: sufficient ? 'ok' : 'error' });
+      if (!sufficient) { hardBlock = true; score -= 40; }
+    } else {
+      checks.push({ name: 'GPU Memory Budget', passed: false, severity: 'warning',
+        detail: `Requires at least ${model.minVramGB}GB GPU memory. Free VRAM cannot be measured here; buffer limits do not establish total memory capacity.` });
+      score -= 15;
+    }
+  }
+
   // 3. Shader F16 Support Check
   if (model.requiresShaderF16) {
     if (!effectiveHasShaderF16) {
@@ -173,9 +200,19 @@ export function evaluateModelCompatibility(
     });
   }
 
+  if (!isSim && hardware.reportedRamGB === null) {
+    checks.push({ name: 'RAM Estimate', passed: false, severity: 'warning',
+      detail: `RAM is estimated at ${effectiveRamGB}GB, not measured. Confirm the device memory or use the simulator.` });
+    score -= 5;
+  }
+
   // 6. Browser Storage Space Quota Check
   const downloadSizeGB = model.downloadSizeMB / 1024;
-  if (effectiveStorageAvailGB < downloadSizeGB) {
+  if (effectiveStorageAvailGB === null) {
+    checks.push({ name: 'Browser Cache Storage', passed: false, severity: 'warning',
+      detail: 'Available browser storage could not be detected. Check space before downloading.' });
+    score -= 5;
+  } else if (effectiveStorageAvailGB < downloadSizeGB) {
     checks.push({
       name: 'Browser Cache Storage',
       passed: false,
@@ -194,10 +231,12 @@ export function evaluateModelCompatibility(
   }
 
   // 7. Calculate Estimated Download Time
-  let downloadSeconds = Math.max(1, Math.round((model.downloadSizeMB * 8) / effectiveDownlinkMbps));
+  const downloadSeconds = Math.max(1, Math.round((model.downloadSizeMB * 8) / effectiveDownlinkMbps));
   let downloadTimeStr = '';
   if (model.downloadSizeMB === 0) {
     downloadTimeStr = 'Instant (Pre-cached)';
+  } else if (effectiveDownlinkMbps <= 0) {
+    downloadTimeStr = 'Unavailable (offline or unknown connection speed)';
   } else if (downloadSeconds < 60) {
     downloadTimeStr = `~${downloadSeconds}s on ${effectiveDownlinkMbps} Mbps`;
   } else {
@@ -260,8 +299,11 @@ export function evaluateModelCompatibility(
   } else if (score < 90) {
     tier = 'moderate';
     headline = 'Moderate Performance';
-    summary = 'Compatible with adequate speed, though closer to recommended specifications.';
+    summary = 'No confirmed blocker, but memory headroom or runtime capacity needs verification.';
   }
+
+  if (hardBlock) estimatedSpeed = 'Unrunnable';
+  else estimatedSpeed = `Estimate: ${estimatedSpeed}`;
 
   const recommendedBackend = effectiveHasWebGPU 
     ? (effectiveHasShaderF16 ? 'WebGPU (f16)' : 'WebGPU (fp32)')

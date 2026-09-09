@@ -1,11 +1,12 @@
-import { detectHardwareProfile } from '../utils/hardwareDetector';
-import { evaluateModelCompatibility } from '../utils/compatibilityChecker';
-import { IN_BROWSER_MODELS } from '../data/modelsData';
-import type { HardwareProfile, HardwareSimulation } from '../types/hardware';
-import type { InBrowserModel, CompatibilityEvaluation } from '../types/model';
+import { detectHardwareProfile } from '../utils/hardwareDetector.js';
+import { evaluateModelCompatibility } from '../utils/compatibilityChecker.js';
+import { IN_BROWSER_MODELS } from '../data/modelsData.js';
+import type { HardwareProfile, HardwareSimulation } from '../types/hardware.js';
+import type { InBrowserModel, CompatibilityEvaluation } from '../types/model.js';
 
 export interface FitOptions {
   ram?: number;
+  vram?: number;
   cpuCores?: number;
   gpu?: 'webgpu-f16' | 'webgpu-nof16' | 'webgl' | 'wasm-cpu';
 }
@@ -43,41 +44,44 @@ export interface FullFitReport {
  * }
  * ```
  */
+export default function fit(modelNameOrId: string, options?: FitOptions): Promise<ModelFitResult>;
+export default function fit(modelNameOrId?: undefined, options?: FitOptions): Promise<FullFitReport>;
+export default function fit(modelNameOrId: string | undefined, options?: FitOptions): Promise<ModelFitResult | FullFitReport>;
 export default async function fit(
   modelNameOrId?: string,
   options?: FitOptions
 ): Promise<ModelFitResult | FullFitReport> {
+  for (const key of ['ram', 'vram', 'cpuCores'] as const) {
+    const value = options?.[key];
+    if (value !== undefined && (!Number.isFinite(value) || value <= 0 || (key === 'cpuCores' && !Number.isInteger(value)))) {
+      throw new TypeError(`[browser-llm-fit] ${key} must be a positive ${key === 'cpuCores' ? 'integer' : 'number'}.`);
+    }
+  }
+  if (options?.gpu !== undefined && !['webgpu-f16', 'webgpu-nof16', 'webgl', 'wasm-cpu'].includes(options.gpu)) {
+    throw new TypeError('[browser-llm-fit] Unsupported GPU backend.');
+  }
+  if (modelNameOrId !== undefined && !modelNameOrId.trim()) {
+    throw new TypeError('[browser-llm-fit] Model name must not be empty.');
+  }
   const hardware = await detectHardwareProfile();
 
   const defaultBackend: 'webgpu-f16' | 'webgpu-nof16' | 'wasm-cpu' = hardware.hasWebGPU
     ? (hardware.hasShaderF16 ? 'webgpu-f16' : 'webgpu-nof16')
     : 'wasm-cpu';
 
-  const sim: HardwareSimulation = options
-    ? {
-        isActive: true,
-        ramGB: options.ram ?? hardware.reportedRamGB ?? 8,
-        cpuCores: options.cpuCores ?? hardware.cpuCores ?? 8,
-        gpuBackend: options.gpu ?? defaultBackend,
-        maxStorageBufferMB: hardware.webgpuLimits
-          ? Math.round(hardware.webgpuLimits.maxStorageBufferBindingSize / (1024 * 1024))
-          : 128,
-        storageAvailableGB: hardware.storageAvailableGB ?? 25,
-        hasWasmSimd: hardware.hasWasmSimd ?? true,
-        downlinkMbps: hardware.downlinkMbps ?? 50,
-      }
-    : {
-        isActive: false,
-        ramGB: hardware.reportedRamGB ?? 8,
-        cpuCores: hardware.cpuCores ?? 8,
-        gpuBackend: defaultBackend,
-        maxStorageBufferMB: hardware.webgpuLimits
-          ? Math.round(hardware.webgpuLimits.maxStorageBufferBindingSize / (1024 * 1024))
-          : 128,
-        storageAvailableGB: hardware.storageAvailableGB ?? 25,
-        hasWasmSimd: hardware.hasWasmSimd ?? true,
-        downlinkMbps: hardware.downlinkMbps ?? 50,
-      };
+  const sim: HardwareSimulation = {
+    isActive: options !== undefined && Object.values(options).some(value => value !== undefined),
+    ramGB: options?.ram ?? hardware.reportedRamGB ?? hardware.estimatedRamGB,
+    vramGB: options?.vram,
+    cpuCores: options?.cpuCores ?? hardware.cpuCores,
+    gpuBackend: options?.gpu ?? defaultBackend,
+    maxStorageBufferMB: hardware.webgpuLimits
+      ? Math.floor(hardware.webgpuLimits.maxStorageBufferBindingSize / (1024 * 1024))
+      : 128,
+    storageAvailableGB: hardware.storageAvailableGB ?? 25,
+    hasWasmSimd: hardware.hasWasmSimd,
+    downlinkMbps: hardware.downlinkMbps ?? 50,
+  };
 
   // If no model is specified, return full hardware report + all models evaluated
   if (!modelNameOrId) {
@@ -93,7 +97,7 @@ export default async function fit(
   }
 
   // Find model by ID, name, or repo substring (case-insensitive)
-  const q = modelNameOrId.toLowerCase();
+  const q = modelNameOrId.trim().toLowerCase();
   const found = IN_BROWSER_MODELS.find(
     (m) =>
       m.id.toLowerCase() === q ||
@@ -128,3 +132,5 @@ export {
   evaluateModelCompatibility,
   IN_BROWSER_MODELS,
 };
+
+export type { HardwareProfile, HardwareSimulation, InBrowserModel, CompatibilityEvaluation };

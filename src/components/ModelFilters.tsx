@@ -109,7 +109,7 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
       </div>
 
       {/* Modality Tabs */}
-      <div className="flex items-center gap-1 overflow-x-auto pb-1.5 border-b border-[#1F1F1F] text-xs scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="flex items-center gap-1 overflow-x-auto pb-1.5 border-b border-[#1F1F1F] text-xs scrollbar-none -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
         {modalities.map((m) => {
           const isSelected = selectedModality === m.id;
           return (
@@ -134,7 +134,7 @@ export const ModelFilters: React.FC<ModelFiltersProps> = ({
       {/* Status Indicators & Framework Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs pt-1">
         {/* Status Dots */}
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
           <span className="text-[#707070] text-[11px] mr-1 shrink-0">Status:</span>
           {[
             { id: 'all', label: 'All', dot: null },

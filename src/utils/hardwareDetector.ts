@@ -1,12 +1,12 @@
-import type { HardwareProfile, WebGPULimits } from '../types/hardware';
+import type { HardwareProfile, WebGPULimits } from '../types/hardware.js';
 
 // Test WASM SIMD support using minimal byte sequence
 function checkWasmSimd(): boolean {
   try {
     return WebAssembly.validate(
       new Uint8Array([
-        0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10,
-        10, 1, 8, 0, 125, 0, 0, 0, 0, 11
+        0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0,
+        10, 22, 1, 20, 0, 253, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11
       ])
     );
   } catch {
@@ -313,7 +313,7 @@ export async function detectHardwareProfile(): Promise<HardwareProfile> {
     hasWasmMemory64: checkWasmMemory64(),
     storageQuotaGB,
     storageUsageGB,
-    storageAvailableGB: storageAvailableGB ?? 25,
+    storageAvailableGB,
     isStoragePersisted,
     hasChromeBuiltinAI,
     chromeBuiltinAIStatus,

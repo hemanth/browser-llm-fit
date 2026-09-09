@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { DEMO_MODELS, getDemoModel } from '../data/demoModels';
+import type { InferenceRequest, InferenceResponse } from '../workers/inference.worker';
 import { X, Play } from 'lucide-react';
 import type { InBrowserModel } from '../types/model';
 import { Select } from './Select';
@@ -8,39 +10,20 @@ interface LiveInferenceModalProps {
   isOpen: boolean;
   onClose: () => void;
   hasWebGPU: boolean;
+  hasShaderF16: boolean;
 }
-
-const AVAILABLE_TEST_MODELS = [
-  {
-    id: 'onnx-community/SmolLM2-135M-Instruct',
-    name: 'SmolLM2 135M Instruct (LLM / Text Generation)',
-    task: 'text-generation',
-    defaultPrompt: 'The future of local in-browser artificial intelligence is'
-  },
-  {
-    id: 'Xenova/distilbert-base-uncased-finetuned-sst-2-english',
-    name: 'DistilBERT SST-2 (Sentiment Analysis)',
-    task: 'sentiment-analysis',
-    defaultPrompt: 'Running machine learning models locally in the browser with WebGPU is fast and completely private.'
-  },
-  {
-    id: 'Xenova/all-MiniLM-L6-v2',
-    name: 'all-MiniLM-L6-v2 (Vector Embeddings 384d)',
-    task: 'feature-extraction',
-    defaultPrompt: 'Local vector search and semantic retrieval.'
-  }
-];
 
 export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
   model,
   isOpen,
   onClose,
   hasWebGPU,
+  hasShaderF16,
 }) => {
   // Determine initial selected model id
-  const initialModelId = model?.testModelId || 'onnx-community/SmolLM2-135M-Instruct';
+  const initialModelId = model ? (getDemoModel(model.testModelId)?.id ?? '') : DEMO_MODELS[0].id;
   const [selectedModelId, setSelectedModelId] = useState(initialModelId);
-  const [inputText, setInputText] = useState('The future of local in-browser artificial intelligence is');
+  const [inputText, setInputText] = useState(getDemoModel(initialModelId)?.defaultPrompt ?? '');
 
   const [loadingModel, setLoadingModel] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState<string>('');
@@ -49,108 +32,68 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
   const [latencyMs, setLatencyMs] = useState<number | null>(null);
   const [deviceUsed, setDeviceUsed] = useState<string>('');
 
-  // Sync selected model during render when prop changes
-  const [prevModelId, setPrevModelId] = useState(model?.testModelId);
-  if (model?.testModelId !== prevModelId) {
-    setPrevModelId(model?.testModelId);
-    const newId = model?.testModelId || 'onnx-community/SmolLM2-135M-Instruct';
-    setSelectedModelId(newId);
-    const match = AVAILABLE_TEST_MODELS.find(m => m.id === newId);
-    if (match) {
-      setInputText(match.defaultPrompt);
-    }
-    setResult(null);
-    setLatencyMs(null);
-  }
+  const workerRef = useRef<Worker | null>(null);
+  useEffect(() => () => { workerRef.current?.terminate(); }, []);
 
-  if (!isOpen) return null;
+  const stopInference = () => {
+    workerRef.current?.terminate();
+    workerRef.current = null;
+    setLoadingModel(false);
+    setRunningInference(false);
+  };
+  const close = () => { stopInference(); onClose(); };
 
   const handleSelectModelChange = (id: string) => {
+    stopInference();
     setSelectedModelId(id);
-    const match = AVAILABLE_TEST_MODELS.find(m => m.id === id);
-    if (match) {
-      setInputText(match.defaultPrompt);
-    }
+    setInputText(getDemoModel(id)?.defaultPrompt ?? '');
     setResult(null);
     setLatencyMs(null);
   };
 
-  const handleRunInference = async () => {
+  const handleRunInference = () => {
+    if (!getDemoModel(selectedModelId) || !inputText.trim()) return;
+    stopInference();
     setLoadingModel(true);
     setResult(null);
     setLatencyMs(null);
     setLoadingProgress('Loading pipeline...');
-
+    const device = hasWebGPU ? 'webgpu' : 'wasm';
+    setDeviceUsed(device);
     try {
-      const { pipeline, env } = await import('@huggingface/transformers');
-      env.allowLocalModels = false;
-
-      const device = hasWebGPU ? 'webgpu' : 'wasm';
-      setDeviceUsed(device);
-
-      const isTextGen = selectedModelId.includes('SmolLM');
-      const isFeatureExtractor = selectedModelId.includes('MiniLM') || selectedModelId.includes('bge');
-      const task = isTextGen ? 'text-generation' : isFeatureExtractor ? 'feature-extraction' : 'sentiment-analysis';
-
-      const pipeOptions: Record<string, any> = {
-        device,
-        progress_callback: (progress: any) => {
-          if (progress.status === 'progress') {
-            const percent = Math.round((progress.loaded / progress.total) * 100) || 0;
-            setLoadingProgress(`Downloading ${progress.file}: ${percent}%`);
-          } else if (progress.status === 'ready') {
-            setLoadingProgress('Ready');
-          }
+      const worker = new Worker(new URL('../workers/inference.worker.ts', import.meta.url), { type: 'module' });
+      workerRef.current = worker;
+      worker.onmessage = ({ data }: MessageEvent<InferenceResponse>) => {
+        if (workerRef.current !== worker) return;
+        if (data.type === 'progress') setLoadingProgress(data.message);
+        else if (data.type === 'running') {
+          setLoadingModel(false);
+          setRunningInference(true);
+        } else {
+          if (data.type === 'result') {
+            setResult(data.text);
+            setLatencyMs(data.latencyMs);
+          } else setResult(`Execution error: ${data.message}`);
+          stopInference();
         }
       };
-
-      if (isTextGen) {
-        pipeOptions.dtype = device === 'webgpu' ? 'q4f16' : 'q4';
-      }
-
-      const pipe = await pipeline(task as any, selectedModelId, pipeOptions);
-
-      setLoadingModel(false);
-      setRunningInference(true);
-
-      const t0 = performance.now();
-
-      if (isTextGen) {
-        const output = await pipe(inputText, {
-          max_new_tokens: 36,
-          temperature: 0.7,
-        });
-        const t1 = performance.now();
-        setLatencyMs(Math.round(t1 - t0));
-        const text = Array.isArray(output) ? output[0]?.generated_text : (output as any)?.generated_text;
-        setResult(text || JSON.stringify(output));
-      } else if (isFeatureExtractor) {
-        const output = await pipe(inputText, { pooling: 'mean', normalize: true });
-        const t1 = performance.now();
-        setLatencyMs(Math.round(t1 - t0));
-        const shape = output.dims ? `[${output.dims.join(' × ')}]` : `Array(${output.data?.length || output.length})`;
-        const sample = Array.from(output.data ? output.data.slice(0, 5) : output.slice(0, 5))
-          .map((v: any) => Number(v).toFixed(4))
-          .join(', ');
-        setResult(`Embedding Vector (${shape}): [${sample}, ...]`);
-      } else {
-        const output = await pipe(inputText);
-        const t1 = performance.now();
-        setLatencyMs(Math.round(t1 - t0));
-        const top = Array.isArray(output) ? output[0] : output;
-        setResult(`Classification: ${top.label} • ${(top.score * 100).toFixed(2)}% confidence`);
-      }
-    } catch (err) {
-      console.error(err);
-      setResult(`Execution error: ${(err as Error).message}`);
-    } finally {
-      setLoadingModel(false);
-      setRunningInference(false);
+      worker.onerror = (event) => {
+        if (workerRef.current !== worker) return;
+        setResult(`Execution error: ${event.message || 'The inference worker failed.'}`);
+        stopInference();
+      };
+      const request: InferenceRequest = { modelId: selectedModelId, text: inputText, device, hasShaderF16 };
+      worker.postMessage(request);
+    } catch (error) {
+      setResult(`Execution error: ${error instanceof Error ? error.message : String(error)}`);
+      stopInference();
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#000000]/80 backdrop-blur-sm">
+    <div role="dialog" aria-modal="true" aria-label="Live In-Browser Inference" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#000000]/80 backdrop-blur-sm">
       <div className="bg-[#0A0A0A] border border-[#262626] rounded-xl max-w-lg w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="p-4 border-b border-[#262626] flex items-center justify-between">
@@ -164,7 +107,8 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
           </div>
 
           <button
-            onClick={onClose}
+            onClick={close}
+            aria-label="Close inference demo"
             className="h-7 w-7 rounded-md text-[#707070] hover:text-[#EDEDED] hover:bg-[#171717] transition-colors flex items-center justify-center"
           >
             <X className="h-3.5 w-3.5" />
@@ -175,11 +119,12 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
         <div className="p-4 space-y-3.5 overflow-y-auto text-xs">
           {/* Target Model Selector */}
           <div className="space-y-1">
-            <label className="text-xs font-normal text-[#A1A1A1]">Target Model</label>
+            <label htmlFor="demo-model" className="text-xs font-normal text-[#A1A1A1]">Target Model</label>
             <Select
+              id="demo-model"
               value={selectedModelId}
               onChange={(e) => handleSelectModelChange(e.target.value)}
-              options={AVAILABLE_TEST_MODELS.map((m) => ({ value: m.id, label: m.name }))}
+              options={DEMO_MODELS.map((m) => ({ value: m.id, label: m.name }))}
             />
           </div>
 
@@ -190,8 +135,10 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
 
           {/* Text Input */}
           <div className="space-y-1">
-            <label className="text-xs font-normal text-[#A1A1A1]">Input Text / Prompt</label>
+            <label htmlFor="demo-prompt" className="text-xs font-normal text-[#A1A1A1]">Input Text / Prompt</label>
             <textarea
+              id="demo-prompt"
+              disabled={loadingModel || runningInference}
               rows={3}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
@@ -202,7 +149,7 @@ export const LiveInferenceModal: React.FC<LiveInferenceModalProps> = ({
           {/* Run Button */}
           <button
             onClick={handleRunInference}
-            disabled={loadingModel || runningInference}
+            disabled={loadingModel || runningInference || !getDemoModel(selectedModelId) || !inputText.trim()}
             className="w-full h-8 rounded-md bg-[#EDEDED] hover:bg-[#FFFFFF] disabled:opacity-50 text-[#000000] font-medium text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
           >
             {loadingModel ? (
