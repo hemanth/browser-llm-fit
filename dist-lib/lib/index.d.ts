@@ -1,10 +1,11 @@
-import { detectHardwareProfile } from '../utils/hardwareDetector';
-import { evaluateModelCompatibility } from '../utils/compatibilityChecker';
-import { IN_BROWSER_MODELS } from '../data/modelsData';
-import type { HardwareProfile } from '../types/hardware';
-import type { InBrowserModel, CompatibilityEvaluation } from '../types/model';
+import { detectHardwareProfile } from '../utils/hardwareDetector.js';
+import { evaluateModelCompatibility } from '../utils/compatibilityChecker.js';
+import { IN_BROWSER_MODELS } from '../data/modelsData.js';
+import type { HardwareProfile, HardwareSimulation } from '../types/hardware.js';
+import type { InBrowserModel, CompatibilityEvaluation } from '../types/model.js';
 export interface FitOptions {
     ram?: number;
+    vram?: number;
     cpuCores?: number;
     gpu?: 'webgpu-f16' | 'webgpu-nof16' | 'webgl' | 'wasm-cpu';
 }
@@ -39,5 +40,8 @@ export interface FullFitReport {
  * }
  * ```
  */
-export default function fit(modelNameOrId?: string, options?: FitOptions): Promise<ModelFitResult | FullFitReport>;
+export default function fit(modelNameOrId: string, options?: FitOptions): Promise<ModelFitResult>;
+export default function fit(modelNameOrId?: undefined, options?: FitOptions): Promise<FullFitReport>;
+export default function fit(modelNameOrId: string | undefined, options?: FitOptions): Promise<ModelFitResult | FullFitReport>;
 export { detectHardwareProfile, detectHardwareProfile as detectHardware, evaluateModelCompatibility, IN_BROWSER_MODELS, };
+export type { HardwareProfile, HardwareSimulation, InBrowserModel, CompatibilityEvaluation };

@@ -22,11 +22,24 @@ function e() {
 			1,
 			0,
 			10,
-			10,
+			22,
 			1,
-			8,
+			20,
 			0,
-			125,
+			253,
+			12,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
 			0,
 			0,
 			0,
@@ -179,7 +192,7 @@ async function o() {
 		hasWasmMemory64: n(),
 		storageQuotaGB: w,
 		storageUsageGB: T,
-		storageAvailableGB: E ?? 25,
+		storageAvailableGB: E,
 		isStoragePersisted: D,
 		hasChromeBuiltinAI: O,
 		chromeBuiltinAIStatus: k,
@@ -192,7 +205,7 @@ async function o() {
 //#endregion
 //#region src/utils/compatibilityChecker.ts
 function s(e, t, n) {
-	let r = n && n.isActive, i = r ? n.ramGB : t.reportedRamGB || t.estimatedRamGB, a = r ? n.gpuBackend : t.hasWebGPU ? t.hasShaderF16 ? "webgpu-f16" : "webgpu-nof16" : "wasm-cpu", o = a.startsWith("webgpu"), s = a === "webgpu-f16", c = r ? n.maxStorageBufferMB : t.webgpuLimits ? Math.round(t.webgpuLimits.maxStorageBufferBindingSize / 1048576) : 128, l = r ? n.storageAvailableGB : t.storageAvailableGB ?? 20, u = r ? n.downlinkMbps : t.downlinkMbps ?? 50, d = [], f = 100, p = !1;
+	let r = n && n.isActive, i = r ? n.ramGB : t.reportedRamGB || t.estimatedRamGB, a = r ? n.gpuBackend : t.hasWebGPU ? t.hasShaderF16 ? "webgpu-f16" : "webgpu-nof16" : "wasm-cpu", o = a.startsWith("webgpu"), s = a === "webgpu-f16", c = r ? n.maxStorageBufferMB : t.webgpuLimits ? Math.round(t.webgpuLimits.maxStorageBufferBindingSize / 1048576) : 128, l = r ? n.storageAvailableGB : t.storageAvailableGB, u = r ? n.downlinkMbps : t.downlinkMbps ?? 50, d = [], f = 100, p = !1;
 	if (e.framework === "Chrome Built-in AI") return t.hasChromeBuiltinAI ? (d.push({
 		name: "Chrome Built-in AI (Prompt API)",
 		passed: !0,
@@ -222,7 +235,7 @@ function s(e, t, n) {
 		estimatedDownloadTime: "N/A",
 		recommendedBackend: "Native Chrome"
 	});
-	e.requiresWebGPU ? o ? d.push({
+	if (e.requiresWebGPU ? o ? d.push({
 		name: "WebGPU Engine",
 		passed: !0,
 		detail: `WebGPU active on ${r ? "Simulated Adapter" : t.webgpuDevice}`,
@@ -237,7 +250,33 @@ function s(e, t, n) {
 		passed: !0,
 		detail: o ? "WebGPU accelerated (WASM CPU fallback also supported)" : "Running on CPU via WebAssembly (SIMD)",
 		severity: "ok"
-	}), e.requiresShaderF16 && (s ? d.push({
+	}), !o && e.framework !== "TensorFlow.js") {
+		let i = r ? n.hasWasmSimd : t.hasWasmSimd, a = e.framework === "Transformers.js", o = t.hasWasm && (!a || i);
+		d.push({
+			name: a ? "WASM SIMD Runtime" : "WASM Runtime",
+			passed: o,
+			detail: o ? "Required WebAssembly features are available." : `This CPU backend requires WebAssembly${a ? " with SIMD support" : ""}.`,
+			severity: o ? "ok" : "error"
+		}), o || (p = !0, f -= 50);
+	}
+	if (o && e.minVramGB > 0) {
+		let t = r ? n.vramGB : void 0;
+		if (t !== void 0) {
+			let n = t >= e.minVramGB;
+			d.push({
+				name: "GPU Memory Budget",
+				passed: n,
+				detail: `Supplied budget: ${t}GB; minimum: ${e.minVramGB}GB.`,
+				severity: n ? "ok" : "error"
+			}), n || (p = !0, f -= 40);
+		} else d.push({
+			name: "GPU Memory Budget",
+			passed: !1,
+			severity: "warning",
+			detail: `Requires at least ${e.minVramGB}GB GPU memory. Free VRAM cannot be measured here; buffer limits do not establish total memory capacity.`
+		}), f -= 15;
+	}
+	e.requiresShaderF16 && (s ? d.push({
 		name: "16-bit Float Shaders (shader-f16)",
 		passed: !0,
 		detail: "Full half-precision FP16 shader support detected",
@@ -272,9 +311,19 @@ function s(e, t, n) {
 		passed: !0,
 		detail: `Comfortable memory headroom (${i}GB available vs ${e.recommendedRamGB}GB recommended).`,
 		severity: "ok"
-	});
+	}), !r && t.reportedRamGB === null && (d.push({
+		name: "RAM Estimate",
+		passed: !1,
+		severity: "warning",
+		detail: `RAM is estimated at ${i}GB, not measured. Confirm the device memory or use the simulator.`
+	}), f -= 5);
 	let m = e.downloadSizeMB / 1024;
-	l < m ? (d.push({
+	l === null ? (d.push({
+		name: "Browser Cache Storage",
+		passed: !1,
+		severity: "warning",
+		detail: "Available browser storage could not be detected. Check space before downloading."
+	}), f -= 5) : l < m ? (d.push({
 		name: "Browser Cache Storage",
 		passed: !1,
 		detail: `Model requires ${m.toFixed(2)}GB storage, but only ${l}GB available.`,
@@ -286,11 +335,11 @@ function s(e, t, n) {
 		severity: "ok"
 	});
 	let h = Math.max(1, Math.round(e.downloadSizeMB * 8 / u)), g = "";
-	g = e.downloadSizeMB === 0 ? "Instant (Pre-cached)" : h < 60 ? `~${h}s on ${u} Mbps` : `~${(h / 60).toFixed(1)} min on ${u} Mbps`;
+	g = e.downloadSizeMB === 0 ? "Instant (Pre-cached)" : u <= 0 ? "Unavailable (offline or unknown connection speed)" : h < 60 ? `~${h}s on ${u} Mbps` : `~${(h / 60).toFixed(1)} min on ${u} Mbps`;
 	let _ = "";
 	_ = e.modality === "LLM / Text" ? p ? "Unrunnable" : o && s ? e.paramValueMillion <= 360 ? "60 - 100+ tokens/sec" : e.paramValueMillion <= 1500 ? "35 - 55 tokens/sec" : e.paramValueMillion <= 3500 ? "20 - 38 tokens/sec" : "10 - 22 tokens/sec" : o ? "12 - 25 tokens/sec" : e.paramValueMillion <= 360 ? "15 - 30 tokens/sec (CPU)" : e.paramValueMillion <= 1200 ? "5 - 12 tokens/sec (CPU)" : "< 4 tokens/sec (CPU slow)" : e.modality === "Embeddings" ? o ? "< 15ms per query" : "< 45ms per query (CPU)" : e.modality === "Audio / Speech" ? o ? "5x - 10x real-time speed" : "1.5x - 2.5x real-time speed" : e.modality === "Vision & Multimodal" ? o ? "~200 - 450ms per image" : "~1.2 - 2.5s per image (CPU)" : e.modality === "Image Generation" ? o ? "1.5 - 3.5s per 512x512 image" : "30s+ per image" : "< 20ms per item";
 	let v = "smooth", y = "Runs Smoothly", b = "Hardware fully meets and exceeds all compute, shader, and memory requirements.";
-	return p || f <= 40 ? (v = "incompatible", y = "Cannot Run", b = "Crucial hardware requirements (WebGPU, memory, or storage limits) are missing.") : f < 75 ? (v = "tight", y = "Borderline / Tight Fit", b = "Will run, but memory or buffer constraints may cause throttling or tab lag under load.") : f < 90 && (v = "moderate", y = "Moderate Performance", b = "Compatible with adequate speed, though closer to recommended specifications."), {
+	return p || f <= 40 ? (v = "incompatible", y = "Cannot Run", b = "Crucial hardware requirements (WebGPU, memory, or storage limits) are missing.") : f < 75 ? (v = "tight", y = "Borderline / Tight Fit", b = "Will run, but memory or buffer constraints may cause throttling or tab lag under load.") : f < 90 && (v = "moderate", y = "Moderate Performance", b = "No confirmed blocker, but memory headroom or runtime capacity needs verification."), _ = p ? "Unrunnable" : `Estimate: ${_}`, {
 		tier: v,
 		score: Math.max(5, Math.min(100, f)),
 		headline: y,
@@ -333,11 +382,11 @@ var c = [
 		],
 		hfUrl: "https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct",
 		demoAvailable: !0,
-		testModelId: "onnx-community/SmolLM2-135M-Instruct",
+		testModelId: "HuggingFaceTB/SmolLM2-135M-Instruct",
 		codeSnippet: {
 			framework: "Transformers.js v3",
 			lang: "javascript",
-			code: "import { pipeline } from '@huggingface/transformers';\n\n// Initialize pipeline with WebGPU (falls back to WASM)\nconst generator = await pipeline(\n  'text-generation',\n  'onnx-community/SmolLM2-135M-Instruct',\n  { device: 'webgpu', dtype: 'q4f16' }\n);\n\nconst output = await generator('Explain quantum computing simply:', {\n  max_new_tokens: 64,\n  temperature: 0.7,\n});\nconsole.log(output[0].generated_text);"
+			code: "import { pipeline } from '@huggingface/transformers';\n\n// Initialize pipeline with WebGPU (falls back to WASM)\nconst generator = await pipeline(\n  'text-generation',\n  'HuggingFaceTB/SmolLM2-135M-Instruct',\n  { device: 'webgpu', dtype: 'q4f16' }\n);\n\nconst output = await generator('Explain quantum computing simply:', {\n  max_new_tokens: 64,\n  temperature: 0.7,\n});\nconsole.log(output[0].generated_text);"
 		}
 	},
 	{
@@ -2363,23 +2412,30 @@ var c = [
 //#endregion
 //#region src/lib/index.ts
 async function l(e, t) {
-	let n = await o(), r = n.hasWebGPU ? n.hasShaderF16 ? "webgpu-f16" : "webgpu-nof16" : "wasm-cpu", i = t ? {
-		isActive: !0,
-		ramGB: t.ram ?? n.reportedRamGB ?? 8,
-		cpuCores: t.cpuCores ?? n.cpuCores ?? 8,
-		gpuBackend: t.gpu ?? r,
-		maxStorageBufferMB: n.webgpuLimits ? Math.round(n.webgpuLimits.maxStorageBufferBindingSize / 1048576) : 128,
+	for (let e of [
+		"ram",
+		"vram",
+		"cpuCores"
+	]) {
+		let n = t?.[e];
+		if (n !== void 0 && (!Number.isFinite(n) || n <= 0 || e === "cpuCores" && !Number.isInteger(n))) throw TypeError(`[browser-llm-fit] ${e} must be a positive ${e === "cpuCores" ? "integer" : "number"}.`);
+	}
+	if (t?.gpu !== void 0 && ![
+		"webgpu-f16",
+		"webgpu-nof16",
+		"webgl",
+		"wasm-cpu"
+	].includes(t.gpu)) throw TypeError("[browser-llm-fit] Unsupported GPU backend.");
+	if (e !== void 0 && !e.trim()) throw TypeError("[browser-llm-fit] Model name must not be empty.");
+	let n = await o(), r = n.hasWebGPU ? n.hasShaderF16 ? "webgpu-f16" : "webgpu-nof16" : "wasm-cpu", i = {
+		isActive: t !== void 0 && Object.values(t).some((e) => e !== void 0),
+		ramGB: t?.ram ?? n.reportedRamGB ?? n.estimatedRamGB,
+		vramGB: t?.vram,
+		cpuCores: t?.cpuCores ?? n.cpuCores,
+		gpuBackend: t?.gpu ?? r,
+		maxStorageBufferMB: n.webgpuLimits ? Math.floor(n.webgpuLimits.maxStorageBufferBindingSize / 1048576) : 128,
 		storageAvailableGB: n.storageAvailableGB ?? 25,
-		hasWasmSimd: n.hasWasmSimd ?? !0,
-		downlinkMbps: n.downlinkMbps ?? 50
-	} : {
-		isActive: !1,
-		ramGB: n.reportedRamGB ?? 8,
-		cpuCores: n.cpuCores ?? 8,
-		gpuBackend: r,
-		maxStorageBufferMB: n.webgpuLimits ? Math.round(n.webgpuLimits.maxStorageBufferBindingSize / 1048576) : 128,
-		storageAvailableGB: n.storageAvailableGB ?? 25,
-		hasWasmSimd: n.hasWasmSimd ?? !0,
+		hasWasmSimd: n.hasWasmSimd,
 		downlinkMbps: n.downlinkMbps ?? 50
 	};
 	if (!e) return {
@@ -2389,7 +2445,7 @@ async function l(e, t) {
 			evaluation: s(e, n, i)
 		})).sort((e, t) => t.evaluation.score - e.evaluation.score)
 	};
-	let a = e.toLowerCase(), l = c.find((e) => e.id.toLowerCase() === a || e.name.toLowerCase().includes(a) || e.hfUrl && e.hfUrl.toLowerCase().includes(a));
+	let a = e.trim().toLowerCase(), l = c.find((e) => e.id.toLowerCase() === a || e.name.toLowerCase().includes(a) || e.hfUrl && e.hfUrl.toLowerCase().includes(a));
 	if (!l) throw Error(`[browser-llm-fit] Unknown model "${e}". Call fit() without arguments to inspect supported models.`);
 	let u = s(l, n, i);
 	return {

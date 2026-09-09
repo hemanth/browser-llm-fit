@@ -1,4 +1,4 @@
-import type { InBrowserModel } from '../types/model';
+import type { InBrowserModel } from '../types/model.js';
 
 export const IN_BROWSER_MODELS: InBrowserModel[] = [
   // ==================== LLMs / TEXT GENERATION ====================
@@ -26,7 +26,7 @@ export const IN_BROWSER_MODELS: InBrowserModel[] = [
     useCases: ['Instruction following', 'On-device text completion', 'Proofreading', 'IoT / Low-spec web apps'],
     hfUrl: 'https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct',
     demoAvailable: true,
-    testModelId: 'onnx-community/SmolLM2-135M-Instruct',
+    testModelId: 'HuggingFaceTB/SmolLM2-135M-Instruct',
     codeSnippet: {
       framework: 'Transformers.js v3',
       lang: 'javascript',
@@ -35,7 +35,7 @@ export const IN_BROWSER_MODELS: InBrowserModel[] = [
 // Initialize pipeline with WebGPU (falls back to WASM)
 const generator = await pipeline(
   'text-generation',
-  'onnx-community/SmolLM2-135M-Instruct',
+  'HuggingFaceTB/SmolLM2-135M-Instruct',
   { device: 'webgpu', dtype: 'q4f16' }
 );
 

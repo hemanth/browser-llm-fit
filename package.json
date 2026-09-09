@@ -29,7 +29,10 @@
     "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node -e \"import('fs').then(fs => fs.promises.writeFile('dist-lib/index.d.ts', 'export * from \\\"./lib/index.js\\\";\\nexport { default } from \\\"./lib/index.js\\\";\\n'))\"",
     "build": "npm run build:app && npm run build:lib",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "npm run build:lib && node --test tests/*.test.mjs && npm run test:types",
+    "test:types": "tsc --ignoreConfig --noEmit --strict --module nodenext --moduleResolution nodenext --target es2022 tests/package-types.mts",
+    "test:browser": "node scripts/test-mobile.js"
   },
   "repository": {
     "type": "git",

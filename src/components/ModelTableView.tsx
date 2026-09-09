@@ -1,3 +1,4 @@
+import { getDemoModel } from '../data/demoModels';
 import React from 'react';
 import type { InBrowserModel, CompatibilityEvaluation } from '../types/model';
 import { ExternalLink, Code, Play } from 'lucide-react';
@@ -89,7 +90,7 @@ export const ModelTableView: React.FC<ModelTableViewProps> = ({
                   <span>Code Snippet</span>
                 </button>
 
-                {model.testModelId && evaluation.tier !== 'incompatible' && (
+                {getDemoModel(model.testModelId) && evaluation.tier !== 'incompatible' && (
                   <button
                     onClick={() => onTestLive(model)}
                     className="flex-1 h-8 rounded-md bg-[#EDEDED] hover:bg-[#FFFFFF] text-[#000000] transition-colors flex items-center justify-center gap-1.5 text-xs font-medium"
@@ -198,7 +199,7 @@ export const ModelTableView: React.FC<ModelTableViewProps> = ({
                         <Code className="h-3 w-3" />
                         <span>Code</span>
                       </button>
-                      {model.testModelId && evaluation.tier !== 'incompatible' && (
+                      {getDemoModel(model.testModelId) && evaluation.tier !== 'incompatible' && (
                         <button
                           onClick={() => onTestLive(model)}
                           className="h-7 px-2.5 rounded-md bg-[#EDEDED] text-[#000000] hover:bg-[#FFFFFF] transition-colors flex items-center gap-1 font-medium"

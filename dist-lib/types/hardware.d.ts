@@ -53,6 +53,7 @@ export interface HardwareSimulation {
     cpuCores: number;
     gpuBackend: 'webgpu-f16' | 'webgpu-nof16' | 'webgl' | 'wasm-cpu';
     maxStorageBufferMB: number;
+    vramGB?: number;
     storageAvailableGB: number;
     hasWasmSimd: boolean;
     downlinkMbps: number;
