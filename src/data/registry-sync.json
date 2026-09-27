@@ -1,5 +1,5 @@
 {
-  "lastCheckedAt": "2026-09-20T02:39:52.348Z",
+  "lastCheckedAt": "2026-09-27T02:50:16.917Z",
   "totalActiveInCatalog": 61,
   "upstream": {
     "hfTransformersJsCount": 50,
@@ -9,103 +9,103 @@
   "topHFModels": [
     {
       "id": "nomic-ai/nomic-embed-text-v1.5",
-      "downloads": 14708283,
-      "likes": 935
-    },
-    {
-      "id": "nomic-ai/nomic-embed-text-v1",
-      "downloads": 3211819,
-      "likes": 582
+      "downloads": 13901594,
+      "likes": 940
     },
     {
       "id": "Xenova/all-MiniLM-L6-v2",
-      "downloads": 2950312,
-      "likes": 148
+      "downloads": 3301316,
+      "likes": 150
+    },
+    {
+      "id": "nomic-ai/nomic-embed-text-v1",
+      "downloads": 2899229,
+      "likes": 584
     },
     {
       "id": "Alibaba-NLP/gte-reranker-modernbert-base",
-      "downloads": 2590055,
+      "downloads": 2867518,
       "likes": 98
     },
     {
       "id": "Xenova/bge-base-en-v1.5",
-      "downloads": 2473577,
+      "downloads": 2433801,
       "likes": 10
     },
     {
       "id": "mixedbread-ai/mxbai-embed-large-v1",
-      "downloads": 2399191,
+      "downloads": 2080858,
       "likes": 825
     },
     {
       "id": "HuggingFaceTB/SmolLM2-135M-Instruct",
-      "downloads": 1525471,
-      "likes": 420
+      "downloads": 1744155,
+      "likes": 427
     },
     {
       "id": "Xenova/whisper-tiny",
-      "downloads": 1154233,
+      "downloads": 1228580,
       "likes": 13
     },
     {
-      "id": "WhereIsAI/UAE-Large-V1",
-      "downloads": 1086356,
-      "likes": 237
-    },
-    {
-      "id": "jinaai/jina-reranker-v2-base-multilingual",
-      "downloads": 1056079,
-      "likes": 355
-    },
-    {
-      "id": "Xenova/ms-marco-MiniLM-L-6-v2",
-      "downloads": 1054284,
-      "likes": 9
-    },
-    {
       "id": "Alibaba-NLP/gte-large-en-v1.5",
-      "downloads": 1008338,
+      "downloads": 1036369,
       "likes": 239
     },
     {
+      "id": "jinaai/jina-reranker-v2-base-multilingual",
+      "downloads": 1019872,
+      "likes": 355
+    },
+    {
       "id": "AdamCodd/vit-base-nsfw-detector",
-      "downloads": 949556,
+      "downloads": 943197,
       "likes": 84
     },
     {
       "id": "Snowflake/snowflake-arctic-embed-l-v2.0",
-      "downloads": 890072,
+      "downloads": 942333,
       "likes": 253
     },
     {
+      "id": "Xenova/ms-marco-MiniLM-L-6-v2",
+      "downloads": 911642,
+      "likes": 10
+    },
+    {
       "id": "Xenova/whisper-tiny.en",
-      "downloads": 804680,
+      "downloads": 827428,
       "likes": 27
     },
     {
-      "id": "onnx-community/Kokoro-82M-v1.0-ONNX",
-      "downloads": 725716,
-      "likes": 262
-    },
-    {
-      "id": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
-      "downloads": 672314,
-      "likes": 18
+      "id": "WhereIsAI/UAE-Large-V1",
+      "downloads": 754998,
+      "likes": 237
     },
     {
       "id": "mixedbread-ai/mxbai-rerank-xsmall-v1",
-      "downloads": 660458,
+      "downloads": 698091,
       "likes": 59
     },
     {
+      "id": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
+      "downloads": 695736,
+      "likes": 18
+    },
+    {
+      "id": "onnx-community/Kokoro-82M-v1.0-ONNX",
+      "downloads": 694301,
+      "likes": 267
+    },
+    {
       "id": "llava-hf/llava-onevision-qwen2-0.5b-ov-hf",
-      "downloads": 648872,
+      "downloads": 630093,
       "likes": 60
     },
     {
-      "id": "briaai/RMBG-2.0",
-      "downloads": 627720,
-      "likes": 1457
+      "id": "Snowflake/snowflake-arctic-embed-l",
+      "downloads": 585447,
+      "likes": 104
     }
   ],
   "webllmRegistry": [
@@ -249,43 +249,43 @@
     "transformersJs": [
       {
         "id": "Alibaba-NLP/gte-reranker-modernbert-base",
-        "downloads": 2590055
+        "downloads": 2867518
       },
       {
         "id": "Xenova/bge-base-en-v1.5",
-        "downloads": 2473577
-      },
-      {
-        "id": "WhereIsAI/UAE-Large-V1",
-        "downloads": 1086356
-      },
-      {
-        "id": "jinaai/jina-reranker-v2-base-multilingual",
-        "downloads": 1056079
-      },
-      {
-        "id": "Xenova/ms-marco-MiniLM-L-6-v2",
-        "downloads": 1054284
+        "downloads": 2433801
       },
       {
         "id": "Alibaba-NLP/gte-large-en-v1.5",
-        "downloads": 1008338
+        "downloads": 1036369
+      },
+      {
+        "id": "jinaai/jina-reranker-v2-base-multilingual",
+        "downloads": 1019872
       },
       {
         "id": "AdamCodd/vit-base-nsfw-detector",
-        "downloads": 949556
+        "downloads": 943197
       },
       {
         "id": "Snowflake/snowflake-arctic-embed-l-v2.0",
-        "downloads": 890072
+        "downloads": 942333
       },
       {
-        "id": "onnx-community/Kokoro-82M-v1.0-ONNX",
-        "downloads": 725716
+        "id": "Xenova/ms-marco-MiniLM-L-6-v2",
+        "downloads": 911642
+      },
+      {
+        "id": "WhereIsAI/UAE-Large-V1",
+        "downloads": 754998
+      },
+      {
+        "id": "mixedbread-ai/mxbai-rerank-xsmall-v1",
+        "downloads": 698091
       },
       {
         "id": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
-        "downloads": 672314
+        "downloads": 695736
       }
     ],
     "webllm": [
