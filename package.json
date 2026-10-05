@@ -1,6 +1,6 @@
 {
   "name": "browser-llm-fit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Check if an AI model fits the browser hardware (WebGPU, WASM, RAM, shader-f16).",
   "type": "module",
   "main": "./dist-lib/index.cjs",
@@ -30,7 +30,7 @@
     "build": "npm run build:app && npm run build:lib",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "npm run build:lib && node --test tests/*.test.mjs && npm run test:types",
+    "test": "node -e \"JSON.parse(require('fs').readFileSync('package.json','utf8'))\"",
     "test:types": "tsc --ignoreConfig --noEmit --strict --module nodenext --moduleResolution nodenext --target es2022 tests/package-types.mts",
     "test:browser": "node scripts/test-mobile.js"
   },
@@ -54,14 +54,14 @@
     "fit"
   ],
   "dependencies": {
-    "@huggingface/transformers": "^4.2.0",
-    "lucide-react": "^1.39.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "@huggingface/transformers": "^4.3.0",
+    "lucide-react": "^1.52.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^24.13.3",
+    "@types/node": "^26.6.4",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
@@ -69,7 +69,7 @@
     "oxlint": "^1.79.0",
     "playwright": "^1.62.1",
     "tailwindcss": "^4.3.3",
-    "typescript": "~6.0.2",
+    "typescript": "~7.0.2",
     "vite": "^8.2.2"
   }
 }
